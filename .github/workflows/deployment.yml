@@ -1,0 +1,22 @@
+name: deployment
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: pull, build & run
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        script: |
+            cd ${{ secrets.PROJECTPATH }}
+            git checkout master 
+            git pull https://${{ secrets.GITHUBPAT }}@github.com/DmitryLogunov/golang-graphql.git        
+            ./start

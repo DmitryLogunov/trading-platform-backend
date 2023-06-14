@@ -1,0 +1,26 @@
+scalar Time
+
+type Post {
+  id: ID!
+  title:     String!
+  content:   String!
+  author:    String!
+  hero:      String!
+  publishedAt: Time!
+  updatedAt:   Time!
+}
+
+type Query {
+  getPosts: [Post!]!
+}
+
+input NewPost {
+  title:     String!
+  content:   String!
+  author:    String!
+  hero:      String!
+}
+
+type Mutation {
+  createPost(input: NewPost!): Post!
+}

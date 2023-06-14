@@ -1,0 +1,5 @@
+.git
+.infra
+.env
+golang-graphql
+tmp

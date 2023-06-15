@@ -1,10 +1,10 @@
-package database
+package mysql
 
 import (
 	"fmt"
+	"github.com/DmitryLogunov/trading-platform/internal/database/mysql/models"
 	"os"
 
-	"github.com/DmitryLogunov/trading-platform/core/database/models"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 )

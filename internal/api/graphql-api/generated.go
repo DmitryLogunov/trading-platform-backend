@@ -356,7 +356,7 @@ func (ec *executionContext) field_Mutation_createPost_args(ctx context.Context, 
 	var arg0 NewPost
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNNewPost2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋcoreᚋgraphqlᚑapiᚐNewPost(ctx, tmp)
+		arg0, err = ec.unmarshalNNewPost2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐNewPost(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -371,7 +371,7 @@ func (ec *executionContext) field_Mutation_createUser_args(ctx context.Context, 
 	var arg0 NewUser
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNNewUser2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋcoreᚋgraphqlᚑapiᚐNewUser(ctx, tmp)
+		arg0, err = ec.unmarshalNNewUser2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐNewUser(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -461,7 +461,7 @@ func (ec *executionContext) _Mutation_createPost(ctx context.Context, field grap
 	}
 	res := resTmp.(*Post)
 	fc.Result = res
-	return ec.marshalNPost2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋcoreᚋgraphqlᚑapiᚐPost(ctx, field.Selections, res)
+	return ec.marshalNPost2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐPost(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createPost(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -532,7 +532,7 @@ func (ec *executionContext) _Mutation_createUser(ctx context.Context, field grap
 	}
 	res := resTmp.(*User)
 	fc.Result = res
-	return ec.marshalNUser2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋcoreᚋgraphqlᚑapiᚐUser(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -907,7 +907,7 @@ func (ec *executionContext) _Query_getPosts(ctx context.Context, field graphql.C
 	}
 	res := resTmp.([]*Post)
 	fc.Result = res
-	return ec.marshalNPost2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋcoreᚋgraphqlᚑapiᚐPostᚄ(ctx, field.Selections, res)
+	return ec.marshalNPost2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐPostᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getPosts(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -967,7 +967,7 @@ func (ec *executionContext) _Query_getUsers(ctx context.Context, field graphql.C
 	}
 	res := resTmp.([]*User)
 	fc.Result = res
-	return ec.marshalNUser2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋcoreᚋgraphqlᚑapiᚐUserᚄ(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐUserᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getUsers(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3853,21 +3853,21 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) unmarshalNNewPost2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋcoreᚋgraphqlᚑapiᚐNewPost(ctx context.Context, v interface{}) (NewPost, error) {
+func (ec *executionContext) unmarshalNNewPost2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐNewPost(ctx context.Context, v interface{}) (NewPost, error) {
 	res, err := ec.unmarshalInputNewPost(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNNewUser2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋcoreᚋgraphqlᚑapiᚐNewUser(ctx context.Context, v interface{}) (NewUser, error) {
+func (ec *executionContext) unmarshalNNewUser2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐNewUser(ctx context.Context, v interface{}) (NewUser, error) {
 	res, err := ec.unmarshalInputNewUser(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNPost2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋcoreᚋgraphqlᚑapiᚐPost(ctx context.Context, sel ast.SelectionSet, v Post) graphql.Marshaler {
+func (ec *executionContext) marshalNPost2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐPost(ctx context.Context, sel ast.SelectionSet, v Post) graphql.Marshaler {
 	return ec._Post(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNPost2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋcoreᚋgraphqlᚑapiᚐPostᚄ(ctx context.Context, sel ast.SelectionSet, v []*Post) graphql.Marshaler {
+func (ec *executionContext) marshalNPost2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐPostᚄ(ctx context.Context, sel ast.SelectionSet, v []*Post) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -3891,7 +3891,7 @@ func (ec *executionContext) marshalNPost2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtr
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNPost2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋcoreᚋgraphqlᚑapiᚐPost(ctx, sel, v[i])
+			ret[i] = ec.marshalNPost2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐPost(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -3911,7 +3911,7 @@ func (ec *executionContext) marshalNPost2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtr
 	return ret
 }
 
-func (ec *executionContext) marshalNPost2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋcoreᚋgraphqlᚑapiᚐPost(ctx context.Context, sel ast.SelectionSet, v *Post) graphql.Marshaler {
+func (ec *executionContext) marshalNPost2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐPost(ctx context.Context, sel ast.SelectionSet, v *Post) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -3951,11 +3951,11 @@ func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel as
 	return res
 }
 
-func (ec *executionContext) marshalNUser2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋcoreᚋgraphqlᚑapiᚐUser(ctx context.Context, sel ast.SelectionSet, v User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐUser(ctx context.Context, sel ast.SelectionSet, v User) graphql.Marshaler {
 	return ec._User(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNUser2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋcoreᚋgraphqlᚑapiᚐUserᚄ(ctx context.Context, sel ast.SelectionSet, v []*User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐUserᚄ(ctx context.Context, sel ast.SelectionSet, v []*User) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -3979,7 +3979,7 @@ func (ec *executionContext) marshalNUser2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtr
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNUser2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋcoreᚋgraphqlᚑapiᚐUser(ctx, sel, v[i])
+			ret[i] = ec.marshalNUser2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐUser(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -3999,7 +3999,7 @@ func (ec *executionContext) marshalNUser2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtr
 	return ret
 }
 
-func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋcoreᚋgraphqlᚑapiᚐUser(ctx context.Context, sel ast.SelectionSet, v *User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐUser(ctx context.Context, sel ast.SelectionSet, v *User) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")

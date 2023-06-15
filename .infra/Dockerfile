@@ -6,7 +6,7 @@ COPY . /go/src/github.com/DmitryLogunov/trading-platform
 
 RUN apk --no-cache add git
 
-RUN go build -o /go/src/github.com/DmitryLogunov/trading-platform/trading-platform-api app/server.go
+RUN go build -o /go/src/github.com/DmitryLogunov/trading-platform/trading-platform-api cmd/trading-platform-api/main.go
 
 FROM alpine
 
@@ -15,4 +15,4 @@ WORKDIR /usr/src/app
 
 COPY --from=builder /go/src/github.com/DmitryLogunov/trading-platform/trading-platform-api .
 
-CMD ["./trading-platform"]
+CMD ["./trading-platform-api"]

@@ -1,15 +1,15 @@
 package main
 
 import (
-	graphql_api "github.com/DmitryLogunov/trading-platform/core/graphql-api"
+	"github.com/DmitryLogunov/trading-platform/internal/api/graphql-api"
+	"github.com/DmitryLogunov/trading-platform/internal/api/graphql-api/resolvers"
+	"github.com/DmitryLogunov/trading-platform/internal/database/mysql"
 	"log"
 	"net/http"
 	"os"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/DmitryLogunov/trading-platform/core/database"
-	"github.com/DmitryLogunov/trading-platform/core/graphql-api/resolvers"
 )
 
 const defaultPort = "3000"
@@ -21,14 +21,14 @@ func main() {
 	}
 
 	// establish connection
-	database.ConnectDB()
+	mysql.ConnectDB()
 	// create db
-	database.CreateDB()
+	mysql.CreateDB()
 	// migrate the db with Post models
-	database.MigrateDB()
+	mysql.MigrateDB()
 
 	var srv = handler.NewDefaultServer(graphql_api.NewExecutableSchema(graphql_api.Config{Resolvers: &resolvers.Resolver{
-		Database: database.DBInstance,
+		Database: mysql.DBInstance,
 	}}))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))

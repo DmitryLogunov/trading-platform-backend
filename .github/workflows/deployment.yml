@@ -19,4 +19,4 @@ jobs:
             cd ${{ secrets.PROJECTPATH }}
             git checkout master 
             git pull https://${{ secrets.GITHUBPAT }}@github.com/DmitryLogunov/trading-platform.git        
-            ./start
+            .infra/scripts/deploy

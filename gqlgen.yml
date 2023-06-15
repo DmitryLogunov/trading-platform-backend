@@ -1,26 +1,26 @@
 # Where are all the schema files located? globs are supported eg  src/**/*.graphqls
 schema:
-  - core/graphql-api/schema/**/*.graphqls
+  - internal/api/graphql-api/schema/**/*.graphqls
 
 # Where should the generated server code go?
 exec:
-  filename: core/graphql-api/generated.go
+  filename: internal/api/graphql-api/generated.go
   package: graphql_api
 
 # Uncomment to enable federation
 # federation:
-#   filename: core/graphql-api/federation.go
+#   filename: internal/graphql-api/federation.go
 #   package: graphql_api
 
 # Where should any generated database go?
 model:
-  filename: core/graphql-api/model_gen.go
+  filename: internal/api/graphql-api/model_gen.go
   package: graphql_api
 
 # Where should the resolver implementations go?
 resolver:
   layout: follow-schema
-  dir: core/graphql-api/resolvers
+  dir: internal/api/graphql-api/resolvers
   package: resolvers
   filename_template: "{name}.resolvers.go"
   # Optional: turn on to not generate template comments above resolvers

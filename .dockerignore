@@ -1,5 +1,5 @@
 .git
 .infra
 .env
-golang-graphql
+trading-platform-api
 tmp

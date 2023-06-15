@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/DmitryLogunov/golang-graphql/dbmodel"
+	"github.com/DmitryLogunov/trading-platform/core/database/models"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 )
@@ -44,14 +44,16 @@ func ConnectDB() {
 }
 
 func CreateDB() {
+	mysqlDatabase := os.Getenv("MYSQL_DATABASE")
+
 	// Create a database
-	DBInstance.Exec("CREATE DATABASE IF NOT EXISTS todolist_db")
+	DBInstance.Exec(fmt.Sprintf("CREATE DATABASE IF NOT EXISTS %s", mysqlDatabase))
 	// make the database available to this connection
-	DBInstance.Exec("USE todolist_db")
+	DBInstance.Exec(fmt.Sprintf("USE %s", mysqlDatabase))
 }
 
 func MigrateDB() {
-	// migrate and sync the model to create a db table
-	DBInstance.AutoMigrate(&dbmodel.Post{})
+	// migrate and sync the models to create a db table
+	DBInstance.AutoMigrate(&models.Post{})
 	fmt.Println("Database migration completed....")
 }

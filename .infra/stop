@@ -1,0 +1,8 @@
+#! /bin/bash
+
+echo "Terminating ..."
+
+ROOT_DIR=$(pwd)
+export $(cat ${ROOT_DIR}/.env)
+
+docker-compose -f .infra/docker-compose.yml down

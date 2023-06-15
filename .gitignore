@@ -19,9 +19,8 @@
 
 # Go workspace file
 go.work
-golang-graphql
+trading-platform
 tmp
 
 .env
-
 .idea/

@@ -1,14 +1,15 @@
 package main
 
 import (
-	"github.com/DmitryLogunov/golang-graphql/database"
+	graphql_api "github.com/DmitryLogunov/trading-platform/core/graphql-api"
 	"log"
 	"net/http"
 	"os"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/DmitryLogunov/golang-graphql/graph"
+	"github.com/DmitryLogunov/trading-platform/core/database"
+	"github.com/DmitryLogunov/trading-platform/core/graphql-api/resolvers"
 )
 
 const defaultPort = "3000"
@@ -23,10 +24,10 @@ func main() {
 	database.ConnectDB()
 	// create db
 	database.CreateDB()
-	// migrate the db with Post model
+	// migrate the db with Post models
 	database.MigrateDB()
 
-	var srv = handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{
+	var srv = handler.NewDefaultServer(graphql_api.NewExecutableSchema(graphql_api.Config{Resolvers: &resolvers.Resolver{
 		Database: database.DBInstance,
 	}}))
 

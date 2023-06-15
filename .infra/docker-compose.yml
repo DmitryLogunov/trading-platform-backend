@@ -16,14 +16,14 @@ services:
       - ${MYSQL_EXPOSE_PORT}
     volumes:
       - ./init-data:/init-data
-      - db-volume:/var/lib/mysql
+      - trading-platform-api-db-volume:/var/lib/mysql
 
-  graphql-api:
-    image: golang-graphql-todolist
+  trading-platform-api:
+    image: trading-platform-api
     depends_on:
       - db
     ports:
-      - 127.0.0.1:${HTTP_PORT}:3000
+      - 127.0.0.1:${HTTP_EXPOSE_PORT}:${HTTP_PORT}
     environment:
       MYSQL_HOST: ${MYSQL_HOST}
       MYSQL_USER: ${MYSQL_USER}
@@ -31,14 +31,14 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_PORT: ${MYSQL_PORT}
       HTTP_PORT: ${HTTP_PORT}
-    container_name: graphql-api
-    command: ["/bin/sh", "-ce", "sleep 2 && ./golang-graphql"]
+    container_name: trading-platform-api
+    command: ["/bin/sh", "-ce", "sleep 2 && ./trading-platform-api"]
 
 volumes:
-  db-volume:
+  trading-platform-api-db-volume:
 
 networks:
   golang-graphql-todolist-net:
     external: false
     driver: bridge
-    name: golang-graphql-todolist-net
+    name: golang-graphql-api-todolist-net

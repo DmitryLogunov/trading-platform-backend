@@ -1,7 +1,0 @@
-#! /bin/bash
-
-echo "Terminating ..."
-
-export $(cat .env)
-
-(cd ./.infra && docker-compose restart)

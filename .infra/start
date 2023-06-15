@@ -3,11 +3,11 @@
 echo "Starting ..."
 
 exited_containers_ids=$(docker ps --all | grep Exited | awk '{ print $1 }')
-
 docker stop ${exited_containers_ids} && docker rm ${exited_containers_ids}
 
-docker build -f ./.infra/Dockerfile -t golang-graphql-todolist .
+ROOT_DIR=$(pwd)
+export $(cat ${ROOT_DIR}/.env)
 
-export $(cat .env)
+docker build -f .infra/Dockerfile -t trading-platform-api .
 
-(cd ./.infra && docker-compose up -d)
+docker-compose -f .infra/docker-compose.yml up -d

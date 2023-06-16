@@ -6,7 +6,9 @@ package resolvers
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	jobStatuses "github.com/DmitryLogunov/trading-platform/internal/core/scheduler/enums/jobs-statuses"
 
 	graphql_api "github.com/DmitryLogunov/trading-platform/internal/api/graphql-api"
 	mongodbModels "github.com/DmitryLogunov/trading-platform/internal/database/mongodb/models"
@@ -38,6 +40,53 @@ func (r *queryResolver) GetPosts(ctx context.Context) ([]*graphql_api.Post, erro
 	}
 
 	return gqlPosts, nil
+}
+
+// GetAllJobs is the resolver for the getAllJobs field.
+func (r *queryResolver) GetAllJobs(ctx context.Context) ([]*graphql_api.Job, error) {
+	var gqlJobs []*graphql_api.Job
+
+	jobs := r.Scheduler.FindAll()
+
+	if jobs == nil {
+		return gqlJobs, nil
+	}
+
+	for _, job := range *jobs {
+		paramsStringify, err := json.Marshal((*job).Params)
+		if err != nil {
+			panic(err)
+		}
+
+		cronPeriodStringify, err := json.Marshal((*job).CronPeriod)
+		if err != nil {
+			panic(err)
+		}
+
+		var statusStringify string
+		if (*job).Status == jobStatuses.Created {
+			statusStringify = "created"
+		}
+
+		if (*job).Status == jobStatuses.InProcess {
+			statusStringify = "inProcess"
+		}
+
+		if (*job).Status == jobStatuses.Finished {
+			statusStringify = "finished"
+		}
+
+		gqlJobs = append(gqlJobs, &graphql_api.Job{
+			Tag:        (*job).Tag,
+			HandlerTag: (*job).HandlerTag,
+			Params:     string(paramsStringify),
+			CronPeriod: string(cronPeriodStringify),
+			CreatedAt:  (*job).CreatedAt,
+			Status:     statusStringify,
+		})
+	}
+
+	return gqlJobs, nil
 }
 
 // Query returns graphql_api.QueryResolver implementation.

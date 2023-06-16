@@ -1,6 +1,7 @@
 package resolvers
 
 import (
+	"github.com/DmitryLogunov/trading-platform/internal/core/scheduler"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -9,5 +10,6 @@ import (
 // It serves as dependency injection for your cmd, add any dependencies you require here.
 
 type Resolver struct {
-	MongoDB *mongo.Database
+	MongoDB   *mongo.Database
+	Scheduler *scheduler.JobsManager
 }

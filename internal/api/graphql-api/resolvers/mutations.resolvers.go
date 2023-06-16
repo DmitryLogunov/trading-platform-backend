@@ -7,9 +7,11 @@ package resolvers
 import (
 	"context"
 	"fmt"
-
 	graphql_api "github.com/DmitryLogunov/trading-platform/internal/api/graphql-api"
+	"github.com/DmitryLogunov/trading-platform/internal/core/scheduler"
+	cronPeriodUnits "github.com/DmitryLogunov/trading-platform/internal/core/scheduler/enums/cron-period-units"
 	mongodbModels "github.com/DmitryLogunov/trading-platform/internal/database/mongodb/models"
+	"log"
 )
 
 // CreatePost is the resolver for the createPost field.
@@ -37,6 +39,43 @@ func (r *mutationResolver) CreatePost(ctx context.Context, input graphql_api.New
 		PublishedAt: addedPost.PublishedAt,
 		UpdatedAt:   addedPost.UpdatedAt,
 	}, nil
+}
+
+// StartJob is the resolver for the startJob field.
+func (r *mutationResolver) StartJob(ctx context.Context, input graphql_api.JobData) (string, error) {
+	handler := func(interface{}) bool {
+		log.Printf("Job processing: %s", input.HandlerTag)
+		return true
+	}
+
+	var cronPeriodUnit uint
+	if input.CronPeriod.Unit == "seconds" {
+		cronPeriodUnit = cronPeriodUnits.Seconds
+	}
+
+	if input.CronPeriod.Unit == "minutes" {
+		cronPeriodUnit = cronPeriodUnits.Minutes
+	}
+
+	if input.CronPeriod.Unit == "hours" {
+		cronPeriodUnit = cronPeriodUnits.Hours
+	}
+
+	return r.Scheduler.AddJob(
+		input.HandlerTag,
+		handler,
+		input.Params,
+		scheduler.CronPeriod{Unit: cronPeriodUnit, Interval: input.CronPeriod.Interval},
+	), nil
+}
+
+// StopJob is the resolver for the stopJob field.
+func (r *mutationResolver) StopJob(ctx context.Context, tag string) (string, error) {
+	if res, err := r.Scheduler.DeleteJob(tag); res == false || err != nil {
+		return fmt.Sprintf("%s", err), err
+	}
+
+	return "OK", nil
 }
 
 // Mutation returns graphql_api.MutationResolver implementation.

@@ -1,23 +1,6 @@
 version: '3.8'
 
 services:
-#  db:
-#    image: mysql
-#    command: --default-authentication-plugin=mysql_native_password
-#    restart: always
-#    environment:
-#      MYSQL_USER: mysql_user
-#      MYSQL_DATABASE: ${MYSQL_DATABASE}
-#      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-#      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-#    ports:
-#      - 0.0.0.0:${MYSQL_EXPOSE_PORT}:3306
-#    expose:
-#      - ${MYSQL_EXPOSE_PORT}
-#    volumes:
-#      - ./init-data:/init-data
-#      - trading-platform-api-db-volume:/var/lib/mysql
-
   mongodb:
     image: mongo:latest
     container_name: mongodb
@@ -31,21 +14,21 @@ services:
       - trading-platform-api-mongodb:/data/db
       - trading-platform-api-mongodb-config:/data/configdb
 
-#  trading-platform-api:
-#    image: trading-platform-api
-#    depends_on:
-#      - db
-#    ports:
-#      - 127.0.0.1:${HTTP_EXPOSE_PORT}:${HTTP_PORT}
-#    environment:
-#      MYSQL_HOST: ${MYSQL_HOST}
-#      MYSQL_USER: ${MYSQL_USER}
-#      MYSQL_DATABASE: ${MYSQL_DATABASE}
-#      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-#      MYSQL_PORT: ${MYSQL_PORT}
-#      HTTP_PORT: ${HTTP_PORT}
-#    container_name: trading-platform-api
-#    command: ["/bin/sh", "-ce", "sleep 2 && ./trading-platform-api"]
+  trading-platform-api:
+    image: trading-platform-api
+    depends_on:
+      - db
+    ports:
+      - 127.0.0.1:${HTTP_EXPOSE_PORT}:${HTTP_PORT}
+    environment:
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_PORT: ${MYSQL_PORT}
+      HTTP_PORT: ${HTTP_PORT}
+    container_name: trading-platform-api
+    command: ["/bin/sh", "-ce", "sleep 2 && ./trading-platform-api"]
 
 volumes:
   trading-platform-api-db-volume:

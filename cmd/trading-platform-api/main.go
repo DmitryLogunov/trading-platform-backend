@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/DmitryLogunov/trading-platform/internal/api/graphql-api"
 	"github.com/DmitryLogunov/trading-platform/internal/api/graphql-api/resolvers"
+	"github.com/DmitryLogunov/trading-platform/internal/core/scheduler"
 	"github.com/DmitryLogunov/trading-platform/internal/database/mongodb"
 	"github.com/joho/godotenv"
 	"log"
@@ -31,8 +32,12 @@ func main() {
 		log.Fatal("Error mongodb connecting")
 	}
 
+	scheduler := scheduler.JobsManager{}
+	scheduler.Init()
+
 	var srv = handler.NewDefaultServer(graphql_api.NewExecutableSchema(graphql_api.Config{Resolvers: &resolvers.Resolver{
-		MongoDB: mongoDB,
+		MongoDB:   mongoDB,
+		Scheduler: &scheduler,
 	}}))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))

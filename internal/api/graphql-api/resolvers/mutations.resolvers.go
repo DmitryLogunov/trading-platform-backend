@@ -9,19 +9,19 @@ import (
 	"fmt"
 
 	graphql_api "github.com/DmitryLogunov/trading-platform/internal/api/graphql-api"
-	"github.com/DmitryLogunov/trading-platform/internal/database/mysql/models"
+	mongodbModels "github.com/DmitryLogunov/trading-platform/internal/database/mongodb/models"
 )
 
-// CreatePost is the resolver for creating posts.
+// CreatePost is the resolver for the createPost field.
 func (r *mutationResolver) CreatePost(ctx context.Context, input graphql_api.NewPost) (*graphql_api.Post, error) {
-	pm := models.Post{
+	postsModel := mongodbModels.Post{
 		Title:   input.Title,
 		Content: input.Content,
 		Author:  input.Author,
 		Hero:    input.Hero,
 	}
 
-	addedPost, err := pm.CreatePost(&pm, r.Database)
+	addedPost, err := postsModel.CreatePost(ctx, &postsModel, r.MongoDB)
 
 	if err != nil {
 		fmt.Println(err)
@@ -29,6 +29,7 @@ func (r *mutationResolver) CreatePost(ctx context.Context, input graphql_api.New
 	}
 
 	return &graphql_api.Post{
+		ID:          addedPost.ID.Hex(),
 		Title:       addedPost.Title,
 		Content:     addedPost.Content,
 		Author:      addedPost.Author,
@@ -36,11 +37,6 @@ func (r *mutationResolver) CreatePost(ctx context.Context, input graphql_api.New
 		PublishedAt: addedPost.PublishedAt,
 		UpdatedAt:   addedPost.UpdatedAt,
 	}, nil
-}
-
-// CreateUser is the resolver for creating users.
-func (r *mutationResolver) CreateUser(ctx context.Context, input graphql_api.NewUser) (*graphql_api.User, error) {
-	panic(fmt.Errorf("not implemented: CreateUser - createUser"))
 }
 
 // Mutation returns graphql_api.MutationResolver implementation.

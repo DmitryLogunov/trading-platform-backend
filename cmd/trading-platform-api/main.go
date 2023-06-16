@@ -3,7 +3,8 @@ package main
 import (
 	"github.com/DmitryLogunov/trading-platform/internal/api/graphql-api"
 	"github.com/DmitryLogunov/trading-platform/internal/api/graphql-api/resolvers"
-	"github.com/DmitryLogunov/trading-platform/internal/database/mysql"
+	"github.com/DmitryLogunov/trading-platform/internal/database/mongodb"
+	"github.com/joho/godotenv"
 	"log"
 	"net/http"
 	"os"
@@ -15,20 +16,23 @@ import (
 const defaultPort = "3000"
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env.docker file")
+	}
+
 	port := os.Getenv("HTTP_PORT")
 	if port == "" {
 		port = defaultPort
 	}
 
-	// establish connection
-	mysql.ConnectDB()
-	// create db
-	mysql.CreateDB()
-	// migrate the db with Post models
-	mysql.MigrateDB()
+	mongoDB, err := mongodb.ConnectDB()
+	if err != nil {
+		log.Fatal("Error mongodb connecting")
+	}
 
 	var srv = handler.NewDefaultServer(graphql_api.NewExecutableSchema(graphql_api.Config{Resolvers: &resolvers.Resolver{
-		Database: mysql.DBInstance,
+		MongoDB: mongoDB,
 	}}))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))

@@ -8,24 +8,26 @@ import (
 	"context"
 	"fmt"
 
-	graphql_api2 "github.com/DmitryLogunov/trading-platform/internal/api/graphql-api"
-	"github.com/DmitryLogunov/trading-platform/internal/database/mysql/models"
+	graphql_api "github.com/DmitryLogunov/trading-platform/internal/api/graphql-api"
+	mongodbModels "github.com/DmitryLogunov/trading-platform/internal/database/mongodb/models"
 )
 
-// GetPosts is the resolver for the getting posts.
-func (r *queryResolver) GetPosts(ctx context.Context) ([]*graphql_api2.Post, error) {
-	pm := models.Post{}
-	posts, err := pm.GetPosts(r.Database)
+// GetPosts is the resolver for the getPosts field.
+func (r *queryResolver) GetPosts(ctx context.Context) ([]*graphql_api.Post, error) {
+	postsModel := mongodbModels.Post{}
+
+	posts, err := postsModel.GetPosts(ctx, r.MongoDB)
 
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
 	}
 
-	var gqlPosts []*graphql_api2.Post
+	var gqlPosts []*graphql_api.Post
 
 	for _, p := range posts {
-		gqlPosts = append(gqlPosts, &graphql_api2.Post{
+		gqlPosts = append(gqlPosts, &graphql_api.Post{
+			ID:          p.ID.Hex(),
 			Title:       p.Title,
 			Content:     p.Content,
 			Author:      p.Author,
@@ -38,12 +40,7 @@ func (r *queryResolver) GetPosts(ctx context.Context) ([]*graphql_api2.Post, err
 	return gqlPosts, nil
 }
 
-// GetUsers is the resolver for the getting users.
-func (r *queryResolver) GetUsers(ctx context.Context) ([]*graphql_api2.User, error) {
-	panic(fmt.Errorf("not implemented: GetUsers - getUsers"))
-}
-
-// Query returns graphql_api2.QueryResolver implementation.
-func (r *Resolver) Query() graphql_api2.QueryResolver { return &queryResolver{r} }
+// Query returns graphql_api.QueryResolver implementation.
+func (r *Resolver) Query() graphql_api.QueryResolver { return &queryResolver{r} }
 
 type queryResolver struct{ *Resolver }

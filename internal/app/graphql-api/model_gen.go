@@ -17,14 +17,12 @@ type CronPeriodObject struct {
 }
 
 type Job struct {
-	Tag             string     `json:"tag"`
-	HandlerTag      string     `json:"handlerTag"`
-	Params          string     `json:"params"`
-	CronPeriod      string     `json:"cronPeriod"`
-	CreatedAt       time.Time  `json:"createdAt"`
-	UpdatedAt       *time.Time `json:"updatedAt,omitempty"`
-	LastProcessedAt *time.Time `json:"lastProcessedAt,omitempty"`
-	Status          string     `json:"status"`
+	Tag        string    `json:"tag"`
+	HandlerTag string    `json:"handlerTag"`
+	Params     string    `json:"params"`
+	CronPeriod string    `json:"cronPeriod"`
+	CreatedAt  time.Time `json:"createdAt"`
+	Status     string    `json:"status"`
 }
 
 type JobData struct {

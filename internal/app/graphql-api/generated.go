@@ -51,14 +51,12 @@ type ComplexityRoot struct {
 	}
 
 	Job struct {
-		CreatedAt       func(childComplexity int) int
-		CronPeriod      func(childComplexity int) int
-		HandlerTag      func(childComplexity int) int
-		LastProcessedAt func(childComplexity int) int
-		Params          func(childComplexity int) int
-		Status          func(childComplexity int) int
-		Tag             func(childComplexity int) int
-		UpdatedAt       func(childComplexity int) int
+		CreatedAt  func(childComplexity int) int
+		CronPeriod func(childComplexity int) int
+		HandlerTag func(childComplexity int) int
+		Params     func(childComplexity int) int
+		Status     func(childComplexity int) int
+		Tag        func(childComplexity int) int
 	}
 
 	JobParamObject struct {
@@ -148,13 +146,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Job.HandlerTag(childComplexity), true
 
-	case "Job.lastProcessedAt":
-		if e.complexity.Job.LastProcessedAt == nil {
-			break
-		}
-
-		return e.complexity.Job.LastProcessedAt(childComplexity), true
-
 	case "Job.params":
 		if e.complexity.Job.Params == nil {
 			break
@@ -175,13 +166,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Job.Tag(childComplexity), true
-
-	case "Job.updatedAt":
-		if e.complexity.Job.UpdatedAt == nil {
-			break
-		}
-
-		return e.complexity.Job.UpdatedAt(childComplexity), true
 
 	case "JobParamObject.key":
 		if e.complexity.JobParamObject.Key == nil {
@@ -434,7 +418,7 @@ func (ec *executionContext) field_Mutation_createPost_args(ctx context.Context, 
 	var arg0 NewPost
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNNewPost2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐNewPost(ctx, tmp)
+		arg0, err = ec.unmarshalNNewPost2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐNewPost(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -449,7 +433,7 @@ func (ec *executionContext) field_Mutation_startJob_args(ctx context.Context, ra
 	var arg0 JobData
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNJobData2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐJobData(ctx, tmp)
+		arg0, err = ec.unmarshalNJobData2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐJobData(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -834,88 +818,6 @@ func (ec *executionContext) fieldContext_Job_createdAt(ctx context.Context, fiel
 	return fc, nil
 }
 
-func (ec *executionContext) _Job_updatedAt(ctx context.Context, field graphql.CollectedField, obj *Job) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Job_updatedAt(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.UpdatedAt, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*time.Time)
-	fc.Result = res
-	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Job_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Job",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Time does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Job_lastProcessedAt(ctx context.Context, field graphql.CollectedField, obj *Job) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Job_lastProcessedAt(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.LastProcessedAt, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*time.Time)
-	fc.Result = res
-	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Job_lastProcessedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Job",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Time does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Job_status(ctx context.Context, field graphql.CollectedField, obj *Job) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Job_status(ctx, field)
 	if err != nil {
@@ -1076,7 +978,7 @@ func (ec *executionContext) _Mutation_createPost(ctx context.Context, field grap
 	}
 	res := resTmp.(*Post)
 	fc.Result = res
-	return ec.marshalNPost2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐPost(ctx, field.Selections, res)
+	return ec.marshalNPost2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐPost(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createPost(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1565,7 +1467,7 @@ func (ec *executionContext) _Query_getPosts(ctx context.Context, field graphql.C
 	}
 	res := resTmp.([]*Post)
 	fc.Result = res
-	return ec.marshalNPost2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐPostᚄ(ctx, field.Selections, res)
+	return ec.marshalNPost2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐPostᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getPosts(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1625,7 +1527,7 @@ func (ec *executionContext) _Query_getAllJobs(ctx context.Context, field graphql
 	}
 	res := resTmp.([]*Job)
 	fc.Result = res
-	return ec.marshalNJob2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐJobᚄ(ctx, field.Selections, res)
+	return ec.marshalNJob2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐJobᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getAllJobs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1646,10 +1548,6 @@ func (ec *executionContext) fieldContext_Query_getAllJobs(ctx context.Context, f
 				return ec.fieldContext_Job_cronPeriod(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Job_createdAt(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_Job_updatedAt(ctx, field)
-			case "lastProcessedAt":
-				return ec.fieldContext_Job_lastProcessedAt(ctx, field)
 			case "status":
 				return ec.fieldContext_Job_status(ctx, field)
 			}
@@ -3626,7 +3524,7 @@ func (ec *executionContext) unmarshalInputJobData(ctx context.Context, obj inter
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("params"))
-			data, err := ec.unmarshalNJobParamInput2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐJobParamInputᚄ(ctx, v)
+			data, err := ec.unmarshalNJobParamInput2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐJobParamInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -3635,7 +3533,7 @@ func (ec *executionContext) unmarshalInputJobData(ctx context.Context, obj inter
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("cronPeriod"))
-			data, err := ec.unmarshalNCronPeriodInput2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐCronPeriodInput(ctx, v)
+			data, err := ec.unmarshalNCronPeriodInput2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐCronPeriodInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -3828,10 +3726,6 @@ func (ec *executionContext) _Job(ctx context.Context, sel ast.SelectionSet, obj 
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "updatedAt":
-			out.Values[i] = ec._Job_updatedAt(ctx, field, obj)
-		case "lastProcessedAt":
-			out.Values[i] = ec._Job_lastProcessedAt(ctx, field, obj)
 		case "status":
 			out.Values[i] = ec._Job_status(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -4471,7 +4365,7 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) unmarshalNCronPeriodInput2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐCronPeriodInput(ctx context.Context, v interface{}) (*CronPeriodInput, error) {
+func (ec *executionContext) unmarshalNCronPeriodInput2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐCronPeriodInput(ctx context.Context, v interface{}) (*CronPeriodInput, error) {
 	res, err := ec.unmarshalInputCronPeriodInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
@@ -4491,7 +4385,7 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 	return res
 }
 
-func (ec *executionContext) marshalNJob2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐJobᚄ(ctx context.Context, sel ast.SelectionSet, v []*Job) graphql.Marshaler {
+func (ec *executionContext) marshalNJob2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐJobᚄ(ctx context.Context, sel ast.SelectionSet, v []*Job) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -4515,7 +4409,7 @@ func (ec *executionContext) marshalNJob2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtra
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNJob2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐJob(ctx, sel, v[i])
+			ret[i] = ec.marshalNJob2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐJob(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -4535,7 +4429,7 @@ func (ec *executionContext) marshalNJob2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtra
 	return ret
 }
 
-func (ec *executionContext) marshalNJob2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐJob(ctx context.Context, sel ast.SelectionSet, v *Job) graphql.Marshaler {
+func (ec *executionContext) marshalNJob2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐJob(ctx context.Context, sel ast.SelectionSet, v *Job) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -4545,12 +4439,12 @@ func (ec *executionContext) marshalNJob2ᚖgithubᚗcomᚋDmitryLogunovᚋtradin
 	return ec._Job(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNJobData2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐJobData(ctx context.Context, v interface{}) (JobData, error) {
+func (ec *executionContext) unmarshalNJobData2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐJobData(ctx context.Context, v interface{}) (JobData, error) {
 	res, err := ec.unmarshalInputJobData(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNJobParamInput2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐJobParamInputᚄ(ctx context.Context, v interface{}) ([]*JobParamInput, error) {
+func (ec *executionContext) unmarshalNJobParamInput2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐJobParamInputᚄ(ctx context.Context, v interface{}) ([]*JobParamInput, error) {
 	var vSlice []interface{}
 	if v != nil {
 		vSlice = graphql.CoerceList(v)
@@ -4559,7 +4453,7 @@ func (ec *executionContext) unmarshalNJobParamInput2ᚕᚖgithubᚗcomᚋDmitryL
 	res := make([]*JobParamInput, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNJobParamInput2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐJobParamInput(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNJobParamInput2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐJobParamInput(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -4567,21 +4461,21 @@ func (ec *executionContext) unmarshalNJobParamInput2ᚕᚖgithubᚗcomᚋDmitryL
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalNJobParamInput2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐJobParamInput(ctx context.Context, v interface{}) (*JobParamInput, error) {
+func (ec *executionContext) unmarshalNJobParamInput2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐJobParamInput(ctx context.Context, v interface{}) (*JobParamInput, error) {
 	res, err := ec.unmarshalInputJobParamInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNNewPost2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐNewPost(ctx context.Context, v interface{}) (NewPost, error) {
+func (ec *executionContext) unmarshalNNewPost2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐNewPost(ctx context.Context, v interface{}) (NewPost, error) {
 	res, err := ec.unmarshalInputNewPost(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNPost2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐPost(ctx context.Context, sel ast.SelectionSet, v Post) graphql.Marshaler {
+func (ec *executionContext) marshalNPost2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐPost(ctx context.Context, sel ast.SelectionSet, v Post) graphql.Marshaler {
 	return ec._Post(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNPost2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐPostᚄ(ctx context.Context, sel ast.SelectionSet, v []*Post) graphql.Marshaler {
+func (ec *executionContext) marshalNPost2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐPostᚄ(ctx context.Context, sel ast.SelectionSet, v []*Post) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -4605,7 +4499,7 @@ func (ec *executionContext) marshalNPost2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtr
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNPost2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐPost(ctx, sel, v[i])
+			ret[i] = ec.marshalNPost2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐPost(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -4625,7 +4519,7 @@ func (ec *executionContext) marshalNPost2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtr
 	return ret
 }
 
-func (ec *executionContext) marshalNPost2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋapiᚋgraphqlᚑapiᚐPost(ctx context.Context, sel ast.SelectionSet, v *Post) graphql.Marshaler {
+func (ec *executionContext) marshalNPost2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐPost(ctx context.Context, sel ast.SelectionSet, v *Post) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -4957,22 +4851,6 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 		return graphql.Null
 	}
 	res := graphql.MarshalString(*v)
-	return res
-}
-
-func (ec *executionContext) unmarshalOTime2ᚖtimeᚐTime(ctx context.Context, v interface{}) (*time.Time, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := graphql.UnmarshalTime(v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOTime2ᚖtimeᚐTime(ctx context.Context, sel ast.SelectionSet, v *time.Time) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	res := graphql.MarshalTime(*v)
 	return res
 }
 

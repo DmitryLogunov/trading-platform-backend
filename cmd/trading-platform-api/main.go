@@ -1,10 +1,6 @@
 package main
 
 import (
-	"github.com/DmitryLogunov/trading-platform/internal/api/graphql-api"
-	"github.com/DmitryLogunov/trading-platform/internal/api/graphql-api/resolvers"
-	"github.com/DmitryLogunov/trading-platform/internal/core/scheduler"
-	"github.com/DmitryLogunov/trading-platform/internal/database/mongodb"
 	"github.com/joho/godotenv"
 	"log"
 	"net/http"
@@ -12,6 +8,12 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+
+	graphqlApi "github.com/DmitryLogunov/trading-platform/internal/app/graphql-api"
+	gqlServices "github.com/DmitryLogunov/trading-platform/internal/app/graphql-api/gql-services"
+	"github.com/DmitryLogunov/trading-platform/internal/app/graphql-api/resolvers"
+	"github.com/DmitryLogunov/trading-platform/internal/core/database/mongodb"
+	"github.com/DmitryLogunov/trading-platform/internal/core/scheduler"
 )
 
 const defaultPort = "3000"
@@ -35,9 +37,13 @@ func main() {
 	scheduler := scheduler.JobsManager{}
 	scheduler.Init()
 
-	var srv = handler.NewDefaultServer(graphql_api.NewExecutableSchema(graphql_api.Config{Resolvers: &resolvers.Resolver{
-		MongoDB:   mongoDB,
-		Scheduler: &scheduler,
+	graphQLServices := gqlServices.GqlServices{}
+	graphQLServices.Init()
+
+	var srv = handler.NewDefaultServer(graphqlApi.NewExecutableSchema(graphqlApi.Config{Resolvers: &resolvers.Resolver{
+		MongoDB:     mongoDB,
+		Scheduler:   &scheduler,
+		GqlServices: &graphQLServices,
 	}}))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))

@@ -12,7 +12,7 @@ go.work
 trading-platform-api
 tmp
 
-.env.docker
-.env.local
 .env
+.env.local
+.env.local
 .idea/

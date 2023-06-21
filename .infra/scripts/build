@@ -1,3 +1,8 @@
 #! /bin/bash
+if [ ${1} == "" ] || [ ${1} == "graphql" ]; then
+  go build  -o ./trading-platform-graphql-api cmd/graphql-api/main.go
+fi
 
-go build -o ./trading-platform-api cmd/trading-platform-api/main.go
+if [ ${1} == "" ] || [ ${1} == "rest" ]; then
+  go build -o ./trading-platform-rest-api cmd/rest-api/main.go
+fi

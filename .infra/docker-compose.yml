@@ -7,33 +7,52 @@ services:
     ports:
       - 27017:27017
     environment:
-      - MONGO_INITDB_DATABASE=test
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=qwer1234
+      - MONGO_INITDB_DATABASE=${MONGODB_DATABASE}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASSWORD}
     volumes:
-      - trading-platform-api-mongodb:/data/db
-      - trading-platform-api-mongodb-config:/data/configdb
+      - mongodb:/data/db
+      - mongodb-config:/data/configdb
 
-  trading-platform-api:
-    image: trading-platform-api
+  trading-platform-graphql-api:
+    image: trading-platform-graphql-api
     depends_on:
-      - db
+      - mongodb
     ports:
-      - 127.0.0.1:${HTTP_EXPOSE_PORT}:${HTTP_PORT}
+      - 127.0.0.1:${HTTP_GRAPHQL_EXPOSE_PORT}:${HTTP_GRAPHQL_PORT}
     environment:
-      MYSQL_HOST: ${MYSQL_HOST}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_PORT: ${MYSQL_PORT}
-      HTTP_PORT: ${HTTP_PORT}
-    container_name: trading-platform-api
-    command: ["/bin/sh", "-ce", "sleep 2 && ./trading-platform-api"]
+      MONGODB_HOST: ${MONGODB_HOST}
+      MONGODB_USER: ${MONGODB_USER}
+      MONGODB_PASSWORD: ${MONGODB_PASSWORD}
+      MONGODB_DATABASE: ${MONGODB_DATABASE}
+      MONGODB_PORT: ${MONGODB_PORT}
+      HTTP_GRAPHQL_PORT: ${HTTP_GRAPHQL_PORT}
+    volumes:
+      - ../.env:/usr/src/app/.env:ro
+    container_name: trading-platform-graphql-api
+    command: ["/bin/sh", "-ce", "sleep 2 && ./trading-platform-graphql-api"]
+
+  trading-platform-rest-api:
+    image: trading-platform-rest-api
+    depends_on:
+      - mongodb
+    ports:
+      - 127.0.0.1:${HTTP_REST_EXPOSE_PORT}:${HTTP_REST_PORT}
+    environment:
+      MONGODB_HOST: ${MONGODB_HOST}
+      MONGODB_USER: ${MONGODB_USER}
+      MONGODB_PASSWORD: ${MONGODB_PASSWORD}
+      MONGODB_DATABASE: ${MONGODB_DATABASE}
+      MONGODB_PORT: ${MONGODB_PORT}
+      HTTP_GRAPHQL_PORT: ${HTTP_REST_PORT}
+    volumes:
+      - ../.env:/usr/src/app/.env:ro
+    container_name: trading-platform-rest-api
+    command: ["/bin/sh", "-ce", "sleep 2 && ./trading-platform-rest-api"]
 
 volumes:
-  trading-platform-api-db-volume:
-  trading-platform-api-mongodb:
-  trading-platform-api-mongodb-config:
+  mongodb:
+  mongodb-config:
 
 networks:
   golang-graphql-todolist-net:

@@ -1,0 +1,34 @@
+input JobParamInput {
+  key: String!
+  value: Int!
+}
+
+input CronPeriodInput {
+  unit: String!
+  interval: Int!
+}
+
+input JobData {
+  handlerTag:        String!
+  params:            [JobParamInput!]!
+  cronPeriod:        CronPeriodInput!
+}
+
+type CronPeriodObject {
+  unit: String!
+  interval: Int!
+}
+
+type JobParamObject {
+  key: String!
+  value: Int!
+}
+
+type Job {
+  tag:             String!
+  handlerTag:      String!
+  params:          String!
+  cronPeriod:      String!
+  createdAt:       Time!
+  status:          String!
+}

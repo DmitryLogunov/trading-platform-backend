@@ -1,0 +1,16 @@
+type Post {
+  id:        String!
+  title:     String!
+  content:   String!
+  author:    String!
+  hero:      String!
+  publishedAt: Time!
+  updatedAt:   Time!
+}
+
+input NewPost {
+  title:     String!
+  content:   String!
+  author:    String!
+  hero:      String!
+}

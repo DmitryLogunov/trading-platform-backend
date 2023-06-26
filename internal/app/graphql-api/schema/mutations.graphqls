@@ -1,0 +1,5 @@
+type Mutation {
+  createPost(input: NewPost!): Post!
+  startJob(input: JobData!): String!
+  stopJob(tag: String!): String!
+}

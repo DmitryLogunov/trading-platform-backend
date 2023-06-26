@@ -45,7 +45,7 @@ func (c *Controllers) AddAlert(w http.ResponseWriter, r *http.Request) {
 		CreatedAt: *createdAt,
 	}
 
-	alert.SaveAlert(r.Context(), c.MongoDB, alert)
+	alert.Save(r.Context(), c.MongoDB, alert)
 
 	fmt.Printf("New alert saved: {title: %s, ticker: %s, action: %d, price: %0.6f, createdAt: %s}\n", alert.Title, alert.Ticker, alert.Action, alert.Price, alert.CreatedAt)
 

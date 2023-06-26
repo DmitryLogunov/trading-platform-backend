@@ -8,6 +8,7 @@ import (
 	mongodbModels "github.com/DmitryLogunov/trading-platform/internal/core/database/mongodb/models"
 	"github.com/DmitryLogunov/trading-platform/internal/core/helpers"
 	"net/http"
+	"strconv"
 )
 
 func (c *Controllers) AddAlert(w http.ResponseWriter, r *http.Request) {
@@ -37,11 +38,17 @@ func (c *Controllers) AddAlert(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	price, err := strconv.ParseFloat(alertData.Price, 32)
+	if err != nil {
+		http.Error(w, "Wrong alert action format", http.StatusBadRequest)
+		return
+	}
+
 	alert := &mongodbModels.Alert{
 		Title:     alertData.Title,
 		Ticker:    alertData.Ticker,
 		Action:    action,
-		Price:     alertData.Price,
+		Price:     float32(price),
 		CreatedAt: *createdAt,
 	}
 

@@ -13,7 +13,7 @@ import (
 type TradingService struct{}
 
 // CreateTrading : creates and saves new trading into DB
-func (ts *TradingService) CreateTrading(ctx context.Context, mongoDB *mongo.Database, input graphqlApi.NewTrading) (*graphqlApi.Trading, error) {
+func (ts *TradingService) CreateTrading(ctx context.Context, mongoDB *mongo.Database, input graphqlApi.NewTradingInput) (*graphqlApi.Trading, error) {
 	timeNow := time.Now()
 	var startedAt *time.Time = &timeNow
 	var err error
@@ -59,7 +59,7 @@ func (ts *TradingService) DeleteTrading(ctx context.Context, mongoDB *mongo.Data
 }
 
 // UpdateTrading : updates trading in DB
-func (ts *TradingService) UpdateTrading(ctx context.Context, mongoDB *mongo.Database, input graphqlApi.TradingInput) (*graphqlApi.Trading, error) {
+func (ts *TradingService) UpdateTrading(ctx context.Context, mongoDB *mongo.Database, input graphqlApi.UpdateTradingInput) (*graphqlApi.Trading, error) {
 	gqlTradingFromDB, err := ts.GetTradingByID(ctx, mongoDB, input.ID)
 	if err != nil {
 		fmt.Println(err)

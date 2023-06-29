@@ -48,7 +48,7 @@ type NewPost struct {
 	Hero    string `json:"hero"`
 }
 
-type NewTrading struct {
+type NewTradingInput struct {
 	Exchange                  string  `json:"exchange"`
 	BaseCurrency              string  `json:"baseCurrency"`
 	SecondaryCurrency         string  `json:"secondaryCurrency"`
@@ -80,7 +80,7 @@ type Trading struct {
 	ClosedAt                          *time.Time `json:"closedAt,omitempty"`
 }
 
-type TradingInput struct {
+type UpdateTradingInput struct {
 	ID                                string   `json:"id"`
 	BaseDepositInBaseCurrency         *float64 `json:"baseDepositInBaseCurrency,omitempty"`
 	CurrentDepositInBaseCurrency      *float64 `json:"currentDepositInBaseCurrency,omitempty"`

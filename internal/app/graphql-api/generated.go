@@ -65,11 +65,11 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		CreateTrading func(childComplexity int, input NewTrading) int
+		CreateTrading func(childComplexity int, input NewTradingInput) int
 		DeleteTrading func(childComplexity int, id string) int
 		StartJob      func(childComplexity int, input JobData) int
 		StopJob       func(childComplexity int, tag string) int
-		UpdateTrading func(childComplexity int, input TradingInput) int
+		UpdateTrading func(childComplexity int, input UpdateTradingInput) int
 	}
 
 	Post struct {
@@ -104,8 +104,8 @@ type ComplexityRoot struct {
 }
 
 type MutationResolver interface {
-	CreateTrading(ctx context.Context, input NewTrading) (*Trading, error)
-	UpdateTrading(ctx context.Context, input TradingInput) (*Trading, error)
+	CreateTrading(ctx context.Context, input NewTradingInput) (*Trading, error)
+	UpdateTrading(ctx context.Context, input UpdateTradingInput) (*Trading, error)
 	DeleteTrading(ctx context.Context, id string) (string, error)
 	StartJob(ctx context.Context, input JobData) (string, error)
 	StopJob(ctx context.Context, tag string) (string, error)
@@ -211,7 +211,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateTrading(childComplexity, args["input"].(NewTrading)), true
+		return e.complexity.Mutation.CreateTrading(childComplexity, args["input"].(NewTradingInput)), true
 
 	case "Mutation.deleteTrading":
 		if e.complexity.Mutation.DeleteTrading == nil {
@@ -259,7 +259,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateTrading(childComplexity, args["input"].(TradingInput)), true
+		return e.complexity.Mutation.UpdateTrading(childComplexity, args["input"].(UpdateTradingInput)), true
 
 	case "Post.author":
 		if e.complexity.Post.Author == nil {
@@ -425,8 +425,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputJobData,
 		ec.unmarshalInputJobParamInput,
 		ec.unmarshalInputNewPost,
-		ec.unmarshalInputNewTrading,
-		ec.unmarshalInputTradingInput,
+		ec.unmarshalInputNewTradingInput,
+		ec.unmarshalInputUpdateTradingInput,
 	)
 	first := true
 
@@ -551,10 +551,10 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 func (ec *executionContext) field_Mutation_createTrading_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 NewTrading
+	var arg0 NewTradingInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNNewTrading2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐNewTrading(ctx, tmp)
+		arg0, err = ec.unmarshalNNewTradingInput2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐNewTradingInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -611,10 +611,10 @@ func (ec *executionContext) field_Mutation_stopJob_args(ctx context.Context, raw
 func (ec *executionContext) field_Mutation_updateTrading_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 TradingInput
+	var arg0 UpdateTradingInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNTradingInput2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐTradingInput(ctx, tmp)
+		arg0, err = ec.unmarshalNUpdateTradingInput2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐUpdateTradingInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1145,7 +1145,7 @@ func (ec *executionContext) _Mutation_createTrading(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateTrading(rctx, fc.Args["input"].(NewTrading))
+		return ec.resolvers.Mutation().CreateTrading(rctx, fc.Args["input"].(NewTradingInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1224,7 +1224,7 @@ func (ec *executionContext) _Mutation_updateTrading(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateTrading(rctx, fc.Args["input"].(TradingInput))
+		return ec.resolvers.Mutation().UpdateTrading(rctx, fc.Args["input"].(UpdateTradingInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4517,8 +4517,8 @@ func (ec *executionContext) unmarshalInputNewPost(ctx context.Context, obj inter
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputNewTrading(ctx context.Context, obj interface{}) (NewTrading, error) {
-	var it NewTrading
+func (ec *executionContext) unmarshalInputNewTradingInput(ctx context.Context, obj interface{}) (NewTradingInput, error) {
+	var it NewTradingInput
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
@@ -4582,8 +4582,8 @@ func (ec *executionContext) unmarshalInputNewTrading(ctx context.Context, obj in
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputTradingInput(ctx context.Context, obj interface{}) (TradingInput, error) {
-	var it TradingInput
+func (ec *executionContext) unmarshalInputUpdateTradingInput(ctx context.Context, obj interface{}) (UpdateTradingInput, error) {
+	var it UpdateTradingInput
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
@@ -5618,8 +5618,8 @@ func (ec *executionContext) unmarshalNJobParamInput2ᚖgithubᚗcomᚋDmitryLogu
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNNewTrading2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐNewTrading(ctx context.Context, v interface{}) (NewTrading, error) {
-	res, err := ec.unmarshalInputNewTrading(ctx, v)
+func (ec *executionContext) unmarshalNNewTradingInput2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐNewTradingInput(ctx context.Context, v interface{}) (NewTradingInput, error) {
+	res, err := ec.unmarshalInputNewTradingInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
@@ -5711,8 +5711,8 @@ func (ec *executionContext) marshalNTrading2ᚖgithubᚗcomᚋDmitryLogunovᚋtr
 	return ec._Trading(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNTradingInput2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐTradingInput(ctx context.Context, v interface{}) (TradingInput, error) {
-	res, err := ec.unmarshalInputTradingInput(ctx, v)
+func (ec *executionContext) unmarshalNUpdateTradingInput2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐUpdateTradingInput(ctx context.Context, v interface{}) (UpdateTradingInput, error) {
+	res, err := ec.unmarshalInputUpdateTradingInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 

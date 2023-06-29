@@ -12,7 +12,7 @@ type Trading {
   closedAt:                          Time
 }
 
-input TradingInput {
+input UpdateTradingInput {
   id:                                String!
   baseDepositInBaseCurrency:         Float
   currentDepositInBaseCurrency:      Float
@@ -22,7 +22,7 @@ input TradingInput {
   closedAt:                          String
 }
 
-input NewTrading {
+input NewTradingInput {
   exchange:                          String!
   baseCurrency:                      String!
   secondaryCurrency:                 String!

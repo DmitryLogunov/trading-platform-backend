@@ -12,12 +12,12 @@ import (
 )
 
 // CreateTrading is the resolver for the createTrading field.
-func (r *mutationResolver) CreateTrading(ctx context.Context, input graphqlApi.NewTrading) (*graphqlApi.Trading, error) {
+func (r *mutationResolver) CreateTrading(ctx context.Context, input graphqlApi.NewTradingInput) (*graphqlApi.Trading, error) {
 	return r.GqlServices.TradingService.CreateTrading(ctx, r.MongoDB, input)
 }
 
 // UpdateTrading is the resolver for the updateTrading field.
-func (r *mutationResolver) UpdateTrading(ctx context.Context, input graphqlApi.TradingInput) (*graphqlApi.Trading, error) {
+func (r *mutationResolver) UpdateTrading(ctx context.Context, input graphqlApi.UpdateTradingInput) (*graphqlApi.Trading, error) {
 	return r.GqlServices.TradingService.UpdateTrading(ctx, r.MongoDB, input)
 }
 

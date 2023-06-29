@@ -10,13 +10,18 @@ import (
 	graphqlApi "github.com/DmitryLogunov/trading-platform/internal/app/graphql-api"
 )
 
-// GetPosts is the resolver for the getPosts field.
-func (r *queryResolver) GetPosts(ctx context.Context) ([]*graphqlApi.Post, error) {
-	return r.GqlServices.PostsService.GetPosts(ctx, r.MongoDB)
+// GetTradings is the resolver for the getTradings field.
+func (r *queryResolver) GetTradings(ctx context.Context) ([]*graphqlApi.Trading, error) {
+	return r.GqlServices.TradingService.GetTradings(ctx, r.MongoDB)
 }
 
-// GetAllJobs is the resolver for the getAllJobs field.
-func (r *queryResolver) GetAllJobs(ctx context.Context) ([]*graphqlApi.Job, error) {
+// GetTradingByID is the resolver for the getTradingByID field.
+func (r *queryResolver) GetTradingByID(ctx context.Context, id string) (*graphqlApi.Trading, error) {
+	return r.GqlServices.TradingService.GetTradingByID(ctx, r.MongoDB, id)
+}
+
+// GetJobs is the resolver for the getJobs field.
+func (r *queryResolver) GetJobs(ctx context.Context) ([]*graphqlApi.Job, error) {
 	return r.GqlServices.JobsService.GetAllJobs(r.Scheduler)
 }
 

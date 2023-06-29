@@ -6,13 +6,28 @@ package resolvers
 
 import (
 	"context"
+	"fmt"
 
 	graphqlApi "github.com/DmitryLogunov/trading-platform/internal/app/graphql-api"
 )
 
-// CreatePost is the resolver for the createPost field.
-func (r *mutationResolver) CreatePost(ctx context.Context, input graphqlApi.NewPost) (*graphqlApi.Post, error) {
-	return r.GqlServices.PostsService.CreatePost(ctx, r.MongoDB, input)
+// CreateTrading is the resolver for the createTrading field.
+func (r *mutationResolver) CreateTrading(ctx context.Context, input graphqlApi.NewTrading) (*graphqlApi.Trading, error) {
+	return r.GqlServices.TradingService.CreateTrading(ctx, r.MongoDB, input)
+}
+
+// UpdateTrading is the resolver for the updateTrading field.
+func (r *mutationResolver) UpdateTrading(ctx context.Context, input graphqlApi.TradingInput) (*graphqlApi.Trading, error) {
+	return r.GqlServices.TradingService.UpdateTrading(ctx, r.MongoDB, input)
+}
+
+// DeleteTrading is the resolver for the deleteTrading field.
+func (r *mutationResolver) DeleteTrading(ctx context.Context, id string) (string, error) {
+	if res, err := r.GqlServices.TradingService.DeleteTrading(ctx, r.MongoDB, id); !res && err != nil {
+		return fmt.Sprintf("ERROR: %s", err), err
+	}
+
+	return "OK", nil
 }
 
 // StartJob is the resolver for the startJob field.

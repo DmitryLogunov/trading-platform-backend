@@ -1,0 +1,31 @@
+type Trading {
+  id:                                String!
+  exchange:                          String!
+  baseCurrency:                      String!
+  secondaryCurrency:                 String!
+  baseDepositInBaseCurrency:         Float!
+  currentDepositInBaseCurrency:      Float
+  currentDepositInSecondaryCurrency: Float
+  roiInPercent:                      Float
+  roiInBaseCurrency:                 Float
+  startedAt:                         Time!
+  closedAt:                          Time
+}
+
+input TradingInput {
+  id:                                String!
+  baseDepositInBaseCurrency:         Float
+  currentDepositInBaseCurrency:      Float
+  currentDepositInSecondaryCurrency: Float
+  roiInPercent:                      Float
+  roiInBaseCurrency:                 Float
+  closedAt:                          String
+}
+
+input NewTrading {
+  exchange:                          String!
+  baseCurrency:                      String!
+  secondaryCurrency:                 String!
+  baseDepositInBaseCurrency:         Float!
+  startedAt:                         String
+}

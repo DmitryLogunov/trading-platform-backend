@@ -48,6 +48,14 @@ type NewPost struct {
 	Hero    string `json:"hero"`
 }
 
+type NewTrading struct {
+	Exchange                  string  `json:"exchange"`
+	BaseCurrency              string  `json:"baseCurrency"`
+	SecondaryCurrency         string  `json:"secondaryCurrency"`
+	BaseDepositInBaseCurrency float64 `json:"baseDepositInBaseCurrency"`
+	StartedAt                 *string `json:"startedAt,omitempty"`
+}
+
 type Post struct {
 	ID          string    `json:"id"`
 	Title       string    `json:"title"`
@@ -56,4 +64,28 @@ type Post struct {
 	Hero        string    `json:"hero"`
 	PublishedAt time.Time `json:"publishedAt"`
 	UpdatedAt   time.Time `json:"updatedAt"`
+}
+
+type Trading struct {
+	ID                                string     `json:"id"`
+	Exchange                          string     `json:"exchange"`
+	BaseCurrency                      string     `json:"baseCurrency"`
+	SecondaryCurrency                 string     `json:"secondaryCurrency"`
+	BaseDepositInBaseCurrency         float64    `json:"baseDepositInBaseCurrency"`
+	CurrentDepositInBaseCurrency      *float64   `json:"currentDepositInBaseCurrency,omitempty"`
+	CurrentDepositInSecondaryCurrency *float64   `json:"currentDepositInSecondaryCurrency,omitempty"`
+	RoiInPercent                      *float64   `json:"roiInPercent,omitempty"`
+	RoiInBaseCurrency                 *float64   `json:"roiInBaseCurrency,omitempty"`
+	StartedAt                         time.Time  `json:"startedAt"`
+	ClosedAt                          *time.Time `json:"closedAt,omitempty"`
+}
+
+type TradingInput struct {
+	ID                                string   `json:"id"`
+	BaseDepositInBaseCurrency         *float64 `json:"baseDepositInBaseCurrency,omitempty"`
+	CurrentDepositInBaseCurrency      *float64 `json:"currentDepositInBaseCurrency,omitempty"`
+	CurrentDepositInSecondaryCurrency *float64 `json:"currentDepositInSecondaryCurrency,omitempty"`
+	RoiInPercent                      *float64 `json:"roiInPercent,omitempty"`
+	RoiInBaseCurrency                 *float64 `json:"roiInBaseCurrency,omitempty"`
+	ClosedAt                          *string  `json:"closedAt,omitempty"`
 }

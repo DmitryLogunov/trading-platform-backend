@@ -1,11 +1,11 @@
 package gqlServices
 
 type GqlServices struct {
-	JobsService  *JobsService
-	PostsService *PostsService
+	JobsService    *JobsService
+	TradingService *TradingService
 }
 
 func (gs *GqlServices) Init() {
 	gs.JobsService = &JobsService{}
-	gs.PostsService = &PostsService{}
+	gs.TradingService = &TradingService{}
 }

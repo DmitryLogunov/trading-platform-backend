@@ -65,9 +65,11 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		CreatePost func(childComplexity int, input NewPost) int
-		StartJob   func(childComplexity int, input JobData) int
-		StopJob    func(childComplexity int, tag string) int
+		CreateTrading func(childComplexity int, input NewTradingInput) int
+		DeleteTrading func(childComplexity int, id string) int
+		StartJob      func(childComplexity int, input JobData) int
+		StopJob       func(childComplexity int, tag string) int
+		UpdateTrading func(childComplexity int, input UpdateTradingInput) int
 	}
 
 	Post struct {
@@ -81,19 +83,37 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		GetAllJobs func(childComplexity int) int
-		GetPosts   func(childComplexity int) int
+		GetJobs        func(childComplexity int) int
+		GetTradingByID func(childComplexity int, id string) int
+		GetTradings    func(childComplexity int) int
+	}
+
+	Trading struct {
+		BaseCurrency                      func(childComplexity int) int
+		BaseDepositInBaseCurrency         func(childComplexity int) int
+		ClosedAt                          func(childComplexity int) int
+		CurrentDepositInBaseCurrency      func(childComplexity int) int
+		CurrentDepositInSecondaryCurrency func(childComplexity int) int
+		Exchange                          func(childComplexity int) int
+		ID                                func(childComplexity int) int
+		RoiInBaseCurrency                 func(childComplexity int) int
+		RoiInPercent                      func(childComplexity int) int
+		SecondaryCurrency                 func(childComplexity int) int
+		StartedAt                         func(childComplexity int) int
 	}
 }
 
 type MutationResolver interface {
-	CreatePost(ctx context.Context, input NewPost) (*Post, error)
+	CreateTrading(ctx context.Context, input NewTradingInput) (*Trading, error)
+	UpdateTrading(ctx context.Context, input UpdateTradingInput) (*Trading, error)
+	DeleteTrading(ctx context.Context, id string) (string, error)
 	StartJob(ctx context.Context, input JobData) (string, error)
 	StopJob(ctx context.Context, tag string) (string, error)
 }
 type QueryResolver interface {
-	GetPosts(ctx context.Context) ([]*Post, error)
-	GetAllJobs(ctx context.Context) ([]*Job, error)
+	GetTradings(ctx context.Context) ([]*Trading, error)
+	GetTradingByID(ctx context.Context, id string) (*Trading, error)
+	GetJobs(ctx context.Context) ([]*Job, error)
 }
 
 type executableSchema struct {
@@ -181,17 +201,29 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.JobParamObject.Value(childComplexity), true
 
-	case "Mutation.createPost":
-		if e.complexity.Mutation.CreatePost == nil {
+	case "Mutation.createTrading":
+		if e.complexity.Mutation.CreateTrading == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_createPost_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_createTrading_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreatePost(childComplexity, args["input"].(NewPost)), true
+		return e.complexity.Mutation.CreateTrading(childComplexity, args["input"].(NewTradingInput)), true
+
+	case "Mutation.deleteTrading":
+		if e.complexity.Mutation.DeleteTrading == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteTrading_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteTrading(childComplexity, args["id"].(string)), true
 
 	case "Mutation.startJob":
 		if e.complexity.Mutation.StartJob == nil {
@@ -216,6 +248,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.StopJob(childComplexity, args["tag"].(string)), true
+
+	case "Mutation.updateTrading":
+		if e.complexity.Mutation.UpdateTrading == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateTrading_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateTrading(childComplexity, args["input"].(UpdateTradingInput)), true
 
 	case "Post.author":
 		if e.complexity.Post.Author == nil {
@@ -266,19 +310,108 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Post.UpdatedAt(childComplexity), true
 
-	case "Query.getAllJobs":
-		if e.complexity.Query.GetAllJobs == nil {
+	case "Query.getJobs":
+		if e.complexity.Query.GetJobs == nil {
 			break
 		}
 
-		return e.complexity.Query.GetAllJobs(childComplexity), true
+		return e.complexity.Query.GetJobs(childComplexity), true
 
-	case "Query.getPosts":
-		if e.complexity.Query.GetPosts == nil {
+	case "Query.getTradingByID":
+		if e.complexity.Query.GetTradingByID == nil {
 			break
 		}
 
-		return e.complexity.Query.GetPosts(childComplexity), true
+		args, err := ec.field_Query_getTradingByID_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetTradingByID(childComplexity, args["id"].(string)), true
+
+	case "Query.getTradings":
+		if e.complexity.Query.GetTradings == nil {
+			break
+		}
+
+		return e.complexity.Query.GetTradings(childComplexity), true
+
+	case "Trading.baseCurrency":
+		if e.complexity.Trading.BaseCurrency == nil {
+			break
+		}
+
+		return e.complexity.Trading.BaseCurrency(childComplexity), true
+
+	case "Trading.baseDepositInBaseCurrency":
+		if e.complexity.Trading.BaseDepositInBaseCurrency == nil {
+			break
+		}
+
+		return e.complexity.Trading.BaseDepositInBaseCurrency(childComplexity), true
+
+	case "Trading.closedAt":
+		if e.complexity.Trading.ClosedAt == nil {
+			break
+		}
+
+		return e.complexity.Trading.ClosedAt(childComplexity), true
+
+	case "Trading.currentDepositInBaseCurrency":
+		if e.complexity.Trading.CurrentDepositInBaseCurrency == nil {
+			break
+		}
+
+		return e.complexity.Trading.CurrentDepositInBaseCurrency(childComplexity), true
+
+	case "Trading.currentDepositInSecondaryCurrency":
+		if e.complexity.Trading.CurrentDepositInSecondaryCurrency == nil {
+			break
+		}
+
+		return e.complexity.Trading.CurrentDepositInSecondaryCurrency(childComplexity), true
+
+	case "Trading.exchange":
+		if e.complexity.Trading.Exchange == nil {
+			break
+		}
+
+		return e.complexity.Trading.Exchange(childComplexity), true
+
+	case "Trading.id":
+		if e.complexity.Trading.ID == nil {
+			break
+		}
+
+		return e.complexity.Trading.ID(childComplexity), true
+
+	case "Trading.roiInBaseCurrency":
+		if e.complexity.Trading.RoiInBaseCurrency == nil {
+			break
+		}
+
+		return e.complexity.Trading.RoiInBaseCurrency(childComplexity), true
+
+	case "Trading.roiInPercent":
+		if e.complexity.Trading.RoiInPercent == nil {
+			break
+		}
+
+		return e.complexity.Trading.RoiInPercent(childComplexity), true
+
+	case "Trading.secondaryCurrency":
+		if e.complexity.Trading.SecondaryCurrency == nil {
+			break
+		}
+
+		return e.complexity.Trading.SecondaryCurrency(childComplexity), true
+
+	case "Trading.startedAt":
+		if e.complexity.Trading.StartedAt == nil {
+			break
+		}
+
+		return e.complexity.Trading.StartedAt(childComplexity), true
 
 	}
 	return 0, false
@@ -292,6 +425,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputJobData,
 		ec.unmarshalInputJobParamInput,
 		ec.unmarshalInputNewPost,
+		ec.unmarshalInputNewTradingInput,
+		ec.unmarshalInputUpdateTradingInput,
 	)
 	first := true
 
@@ -388,7 +523,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 	return introspection.WrapTypeFromDef(parsedSchema, parsedSchema.Types[name]), nil
 }
 
-//go:embed "schema/mutations.graphqls" "schema/queries.graphqls" "schema/types/jobs.graphqls" "schema/types/posts.graphqls" "schema/types/scalars.graphqls"
+//go:embed "schema/mutations.graphqls" "schema/queries.graphqls" "schema/types/jobs.graphqls" "schema/types/posts.graphqls" "schema/types/scalars.graphqls" "schema/types/tradings.graphqls"
 var sourcesFS embed.FS
 
 func sourceData(filename string) string {
@@ -405,6 +540,7 @@ var sources = []*ast.Source{
 	{Name: "schema/types/jobs.graphqls", Input: sourceData("schema/types/jobs.graphqls"), BuiltIn: false},
 	{Name: "schema/types/posts.graphqls", Input: sourceData("schema/types/posts.graphqls"), BuiltIn: false},
 	{Name: "schema/types/scalars.graphqls", Input: sourceData("schema/types/scalars.graphqls"), BuiltIn: false},
+	{Name: "schema/types/tradings.graphqls", Input: sourceData("schema/types/tradings.graphqls"), BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
@@ -412,18 +548,33 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
 // region    ***************************** args.gotpl *****************************
 
-func (ec *executionContext) field_Mutation_createPost_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_createTrading_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 NewPost
+	var arg0 NewTradingInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNNewPost2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐNewPost(ctx, tmp)
+		arg0, err = ec.unmarshalNNewTradingInput2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐNewTradingInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
 	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteTrading_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
 	return args, nil
 }
 
@@ -457,6 +608,21 @@ func (ec *executionContext) field_Mutation_stopJob_args(ctx context.Context, raw
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_updateTrading_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 UpdateTradingInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNUpdateTradingInput2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐUpdateTradingInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -469,6 +635,21 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 		}
 	}
 	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_getTradingByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
 	return args, nil
 }
 
@@ -950,8 +1131,8 @@ func (ec *executionContext) fieldContext_JobParamObject_value(ctx context.Contex
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_createPost(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_createPost(ctx, field)
+func (ec *executionContext) _Mutation_createTrading(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createTrading(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -964,7 +1145,7 @@ func (ec *executionContext) _Mutation_createPost(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreatePost(rctx, fc.Args["input"].(NewPost))
+		return ec.resolvers.Mutation().CreateTrading(rctx, fc.Args["input"].(NewTradingInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -976,12 +1157,12 @@ func (ec *executionContext) _Mutation_createPost(ctx context.Context, field grap
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*Post)
+	res := resTmp.(*Trading)
 	fc.Result = res
-	return ec.marshalNPost2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐPost(ctx, field.Selections, res)
+	return ec.marshalNTrading2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐTrading(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_createPost(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_createTrading(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -990,21 +1171,29 @@ func (ec *executionContext) fieldContext_Mutation_createPost(ctx context.Context
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "id":
-				return ec.fieldContext_Post_id(ctx, field)
-			case "title":
-				return ec.fieldContext_Post_title(ctx, field)
-			case "content":
-				return ec.fieldContext_Post_content(ctx, field)
-			case "author":
-				return ec.fieldContext_Post_author(ctx, field)
-			case "hero":
-				return ec.fieldContext_Post_hero(ctx, field)
-			case "publishedAt":
-				return ec.fieldContext_Post_publishedAt(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_Post_updatedAt(ctx, field)
+				return ec.fieldContext_Trading_id(ctx, field)
+			case "exchange":
+				return ec.fieldContext_Trading_exchange(ctx, field)
+			case "baseCurrency":
+				return ec.fieldContext_Trading_baseCurrency(ctx, field)
+			case "secondaryCurrency":
+				return ec.fieldContext_Trading_secondaryCurrency(ctx, field)
+			case "baseDepositInBaseCurrency":
+				return ec.fieldContext_Trading_baseDepositInBaseCurrency(ctx, field)
+			case "currentDepositInBaseCurrency":
+				return ec.fieldContext_Trading_currentDepositInBaseCurrency(ctx, field)
+			case "currentDepositInSecondaryCurrency":
+				return ec.fieldContext_Trading_currentDepositInSecondaryCurrency(ctx, field)
+			case "roiInPercent":
+				return ec.fieldContext_Trading_roiInPercent(ctx, field)
+			case "roiInBaseCurrency":
+				return ec.fieldContext_Trading_roiInBaseCurrency(ctx, field)
+			case "startedAt":
+				return ec.fieldContext_Trading_startedAt(ctx, field)
+			case "closedAt":
+				return ec.fieldContext_Trading_closedAt(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Post", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type Trading", field.Name)
 		},
 	}
 	defer func() {
@@ -1014,7 +1203,141 @@ func (ec *executionContext) fieldContext_Mutation_createPost(ctx context.Context
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_createPost_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_createTrading_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_updateTrading(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_updateTrading(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateTrading(rctx, fc.Args["input"].(UpdateTradingInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*Trading)
+	fc.Result = res
+	return ec.marshalNTrading2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐTrading(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_updateTrading(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Trading_id(ctx, field)
+			case "exchange":
+				return ec.fieldContext_Trading_exchange(ctx, field)
+			case "baseCurrency":
+				return ec.fieldContext_Trading_baseCurrency(ctx, field)
+			case "secondaryCurrency":
+				return ec.fieldContext_Trading_secondaryCurrency(ctx, field)
+			case "baseDepositInBaseCurrency":
+				return ec.fieldContext_Trading_baseDepositInBaseCurrency(ctx, field)
+			case "currentDepositInBaseCurrency":
+				return ec.fieldContext_Trading_currentDepositInBaseCurrency(ctx, field)
+			case "currentDepositInSecondaryCurrency":
+				return ec.fieldContext_Trading_currentDepositInSecondaryCurrency(ctx, field)
+			case "roiInPercent":
+				return ec.fieldContext_Trading_roiInPercent(ctx, field)
+			case "roiInBaseCurrency":
+				return ec.fieldContext_Trading_roiInBaseCurrency(ctx, field)
+			case "startedAt":
+				return ec.fieldContext_Trading_startedAt(ctx, field)
+			case "closedAt":
+				return ec.fieldContext_Trading_closedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Trading", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_updateTrading_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_deleteTrading(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_deleteTrading(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteTrading(rctx, fc.Args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_deleteTrading(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_deleteTrading_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -1439,8 +1762,8 @@ func (ec *executionContext) fieldContext_Post_updatedAt(ctx context.Context, fie
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_getPosts(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_getPosts(ctx, field)
+func (ec *executionContext) _Query_getTradings(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getTradings(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -1453,7 +1776,7 @@ func (ec *executionContext) _Query_getPosts(ctx context.Context, field graphql.C
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetPosts(rctx)
+		return ec.resolvers.Query().GetTradings(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1465,12 +1788,12 @@ func (ec *executionContext) _Query_getPosts(ctx context.Context, field graphql.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*Post)
+	res := resTmp.([]*Trading)
 	fc.Result = res
-	return ec.marshalNPost2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐPostᚄ(ctx, field.Selections, res)
+	return ec.marshalNTrading2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐTradingᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_getPosts(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_getTradings(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -1479,28 +1802,36 @@ func (ec *executionContext) fieldContext_Query_getPosts(ctx context.Context, fie
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "id":
-				return ec.fieldContext_Post_id(ctx, field)
-			case "title":
-				return ec.fieldContext_Post_title(ctx, field)
-			case "content":
-				return ec.fieldContext_Post_content(ctx, field)
-			case "author":
-				return ec.fieldContext_Post_author(ctx, field)
-			case "hero":
-				return ec.fieldContext_Post_hero(ctx, field)
-			case "publishedAt":
-				return ec.fieldContext_Post_publishedAt(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_Post_updatedAt(ctx, field)
+				return ec.fieldContext_Trading_id(ctx, field)
+			case "exchange":
+				return ec.fieldContext_Trading_exchange(ctx, field)
+			case "baseCurrency":
+				return ec.fieldContext_Trading_baseCurrency(ctx, field)
+			case "secondaryCurrency":
+				return ec.fieldContext_Trading_secondaryCurrency(ctx, field)
+			case "baseDepositInBaseCurrency":
+				return ec.fieldContext_Trading_baseDepositInBaseCurrency(ctx, field)
+			case "currentDepositInBaseCurrency":
+				return ec.fieldContext_Trading_currentDepositInBaseCurrency(ctx, field)
+			case "currentDepositInSecondaryCurrency":
+				return ec.fieldContext_Trading_currentDepositInSecondaryCurrency(ctx, field)
+			case "roiInPercent":
+				return ec.fieldContext_Trading_roiInPercent(ctx, field)
+			case "roiInBaseCurrency":
+				return ec.fieldContext_Trading_roiInBaseCurrency(ctx, field)
+			case "startedAt":
+				return ec.fieldContext_Trading_startedAt(ctx, field)
+			case "closedAt":
+				return ec.fieldContext_Trading_closedAt(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Post", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type Trading", field.Name)
 		},
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_getAllJobs(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_getAllJobs(ctx, field)
+func (ec *executionContext) _Query_getTradingByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getTradingByID(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -1513,7 +1844,86 @@ func (ec *executionContext) _Query_getAllJobs(ctx context.Context, field graphql
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetAllJobs(rctx)
+		return ec.resolvers.Query().GetTradingByID(rctx, fc.Args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*Trading)
+	fc.Result = res
+	return ec.marshalNTrading2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐTrading(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_getTradingByID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Trading_id(ctx, field)
+			case "exchange":
+				return ec.fieldContext_Trading_exchange(ctx, field)
+			case "baseCurrency":
+				return ec.fieldContext_Trading_baseCurrency(ctx, field)
+			case "secondaryCurrency":
+				return ec.fieldContext_Trading_secondaryCurrency(ctx, field)
+			case "baseDepositInBaseCurrency":
+				return ec.fieldContext_Trading_baseDepositInBaseCurrency(ctx, field)
+			case "currentDepositInBaseCurrency":
+				return ec.fieldContext_Trading_currentDepositInBaseCurrency(ctx, field)
+			case "currentDepositInSecondaryCurrency":
+				return ec.fieldContext_Trading_currentDepositInSecondaryCurrency(ctx, field)
+			case "roiInPercent":
+				return ec.fieldContext_Trading_roiInPercent(ctx, field)
+			case "roiInBaseCurrency":
+				return ec.fieldContext_Trading_roiInBaseCurrency(ctx, field)
+			case "startedAt":
+				return ec.fieldContext_Trading_startedAt(ctx, field)
+			case "closedAt":
+				return ec.fieldContext_Trading_closedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Trading", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_getTradingByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_getJobs(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getJobs(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetJobs(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1530,7 +1940,7 @@ func (ec *executionContext) _Query_getAllJobs(ctx context.Context, field graphql
 	return ec.marshalNJob2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐJobᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_getAllJobs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_getJobs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -1681,6 +2091,475 @@ func (ec *executionContext) fieldContext_Query___schema(ctx context.Context, fie
 				return ec.fieldContext___Schema_directives(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Schema", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Trading_id(ctx context.Context, field graphql.CollectedField, obj *Trading) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Trading_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Trading_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Trading",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Trading_exchange(ctx context.Context, field graphql.CollectedField, obj *Trading) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Trading_exchange(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Exchange, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Trading_exchange(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Trading",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Trading_baseCurrency(ctx context.Context, field graphql.CollectedField, obj *Trading) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Trading_baseCurrency(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.BaseCurrency, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Trading_baseCurrency(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Trading",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Trading_secondaryCurrency(ctx context.Context, field graphql.CollectedField, obj *Trading) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Trading_secondaryCurrency(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SecondaryCurrency, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Trading_secondaryCurrency(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Trading",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Trading_baseDepositInBaseCurrency(ctx context.Context, field graphql.CollectedField, obj *Trading) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Trading_baseDepositInBaseCurrency(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.BaseDepositInBaseCurrency, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	fc.Result = res
+	return ec.marshalNFloat2float64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Trading_baseDepositInBaseCurrency(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Trading",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Trading_currentDepositInBaseCurrency(ctx context.Context, field graphql.CollectedField, obj *Trading) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Trading_currentDepositInBaseCurrency(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CurrentDepositInBaseCurrency, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*float64)
+	fc.Result = res
+	return ec.marshalOFloat2ᚖfloat64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Trading_currentDepositInBaseCurrency(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Trading",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Trading_currentDepositInSecondaryCurrency(ctx context.Context, field graphql.CollectedField, obj *Trading) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Trading_currentDepositInSecondaryCurrency(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CurrentDepositInSecondaryCurrency, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*float64)
+	fc.Result = res
+	return ec.marshalOFloat2ᚖfloat64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Trading_currentDepositInSecondaryCurrency(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Trading",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Trading_roiInPercent(ctx context.Context, field graphql.CollectedField, obj *Trading) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Trading_roiInPercent(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RoiInPercent, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*float64)
+	fc.Result = res
+	return ec.marshalOFloat2ᚖfloat64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Trading_roiInPercent(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Trading",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Trading_roiInBaseCurrency(ctx context.Context, field graphql.CollectedField, obj *Trading) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Trading_roiInBaseCurrency(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RoiInBaseCurrency, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*float64)
+	fc.Result = res
+	return ec.marshalOFloat2ᚖfloat64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Trading_roiInBaseCurrency(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Trading",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Trading_startedAt(ctx context.Context, field graphql.CollectedField, obj *Trading) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Trading_startedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.StartedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Trading_startedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Trading",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Trading_closedAt(ctx context.Context, field graphql.CollectedField, obj *Trading) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Trading_closedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ClosedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	fc.Result = res
+	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Trading_closedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Trading",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
 		},
 	}
 	return fc, nil
@@ -3638,6 +4517,154 @@ func (ec *executionContext) unmarshalInputNewPost(ctx context.Context, obj inter
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputNewTradingInput(ctx context.Context, obj interface{}) (NewTradingInput, error) {
+	var it NewTradingInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"exchange", "baseCurrency", "secondaryCurrency", "baseDepositInBaseCurrency", "startedAt"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "exchange":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("exchange"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Exchange = data
+		case "baseCurrency":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("baseCurrency"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.BaseCurrency = data
+		case "secondaryCurrency":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("secondaryCurrency"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SecondaryCurrency = data
+		case "baseDepositInBaseCurrency":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("baseDepositInBaseCurrency"))
+			data, err := ec.unmarshalNFloat2float64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.BaseDepositInBaseCurrency = data
+		case "startedAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("startedAt"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.StartedAt = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputUpdateTradingInput(ctx context.Context, obj interface{}) (UpdateTradingInput, error) {
+	var it UpdateTradingInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"id", "baseDepositInBaseCurrency", "currentDepositInBaseCurrency", "currentDepositInSecondaryCurrency", "roiInPercent", "roiInBaseCurrency", "closedAt"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ID = data
+		case "baseDepositInBaseCurrency":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("baseDepositInBaseCurrency"))
+			data, err := ec.unmarshalOFloat2ᚖfloat64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.BaseDepositInBaseCurrency = data
+		case "currentDepositInBaseCurrency":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("currentDepositInBaseCurrency"))
+			data, err := ec.unmarshalOFloat2ᚖfloat64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CurrentDepositInBaseCurrency = data
+		case "currentDepositInSecondaryCurrency":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("currentDepositInSecondaryCurrency"))
+			data, err := ec.unmarshalOFloat2ᚖfloat64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CurrentDepositInSecondaryCurrency = data
+		case "roiInPercent":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("roiInPercent"))
+			data, err := ec.unmarshalOFloat2ᚖfloat64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RoiInPercent = data
+		case "roiInBaseCurrency":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("roiInBaseCurrency"))
+			data, err := ec.unmarshalOFloat2ᚖfloat64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RoiInBaseCurrency = data
+		case "closedAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("closedAt"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClosedAt = data
+		}
+	}
+
+	return it, nil
+}
+
 // endregion **************************** input.gotpl *****************************
 
 // region    ************************** interface.gotpl ***************************
@@ -3817,9 +4844,23 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Mutation")
-		case "createPost":
+		case "createTrading":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_createPost(ctx, field)
+				return ec._Mutation_createTrading(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "updateTrading":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateTrading(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "deleteTrading":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deleteTrading(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -3949,7 +4990,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
-		case "getPosts":
+		case "getTradings":
 			field := field
 
 			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
@@ -3958,7 +4999,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_getPosts(ctx, field)
+				res = ec._Query_getTradings(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -3971,7 +5012,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "getAllJobs":
+		case "getTradingByID":
 			field := field
 
 			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
@@ -3980,7 +5021,29 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_getAllJobs(ctx, field)
+				res = ec._Query_getTradingByID(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "getJobs":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getJobs(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -4001,6 +5064,80 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Query___schema(ctx, field)
 			})
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var tradingImplementors = []string{"Trading"}
+
+func (ec *executionContext) _Trading(ctx context.Context, sel ast.SelectionSet, obj *Trading) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, tradingImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Trading")
+		case "id":
+			out.Values[i] = ec._Trading_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "exchange":
+			out.Values[i] = ec._Trading_exchange(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "baseCurrency":
+			out.Values[i] = ec._Trading_baseCurrency(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "secondaryCurrency":
+			out.Values[i] = ec._Trading_secondaryCurrency(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "baseDepositInBaseCurrency":
+			out.Values[i] = ec._Trading_baseDepositInBaseCurrency(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "currentDepositInBaseCurrency":
+			out.Values[i] = ec._Trading_currentDepositInBaseCurrency(ctx, field, obj)
+		case "currentDepositInSecondaryCurrency":
+			out.Values[i] = ec._Trading_currentDepositInSecondaryCurrency(ctx, field, obj)
+		case "roiInPercent":
+			out.Values[i] = ec._Trading_roiInPercent(ctx, field, obj)
+		case "roiInBaseCurrency":
+			out.Values[i] = ec._Trading_roiInBaseCurrency(ctx, field, obj)
+		case "startedAt":
+			out.Values[i] = ec._Trading_startedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "closedAt":
+			out.Values[i] = ec._Trading_closedAt(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -4370,6 +5507,21 @@ func (ec *executionContext) unmarshalNCronPeriodInput2ᚖgithubᚗcomᚋDmitryLo
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalNFloat2float64(ctx context.Context, v interface{}) (float64, error) {
+	res, err := graphql.UnmarshalFloat(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNFloat2float64(ctx context.Context, sel ast.SelectionSet, v float64) graphql.Marshaler {
+	res := graphql.MarshalFloat(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
 func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
 	res, err := graphql.UnmarshalInt(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -4466,67 +5618,9 @@ func (ec *executionContext) unmarshalNJobParamInput2ᚖgithubᚗcomᚋDmitryLogu
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNNewPost2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐNewPost(ctx context.Context, v interface{}) (NewPost, error) {
-	res, err := ec.unmarshalInputNewPost(ctx, v)
+func (ec *executionContext) unmarshalNNewTradingInput2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐNewTradingInput(ctx context.Context, v interface{}) (NewTradingInput, error) {
+	res, err := ec.unmarshalInputNewTradingInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNPost2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐPost(ctx context.Context, sel ast.SelectionSet, v Post) graphql.Marshaler {
-	return ec._Post(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNPost2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐPostᚄ(ctx context.Context, sel ast.SelectionSet, v []*Post) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalNPost2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐPost(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
-}
-
-func (ec *executionContext) marshalNPost2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐPost(ctx context.Context, sel ast.SelectionSet, v *Post) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._Post(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
@@ -4557,6 +5651,69 @@ func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel as
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalNTrading2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐTrading(ctx context.Context, sel ast.SelectionSet, v Trading) graphql.Marshaler {
+	return ec._Trading(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNTrading2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐTradingᚄ(ctx context.Context, sel ast.SelectionSet, v []*Trading) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNTrading2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐTrading(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNTrading2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐTrading(ctx context.Context, sel ast.SelectionSet, v *Trading) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Trading(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNUpdateTradingInput2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚋinternalᚋappᚋgraphqlᚑapiᚐUpdateTradingInput(ctx context.Context, v interface{}) (UpdateTradingInput, error) {
+	res, err := ec.unmarshalInputUpdateTradingInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {
@@ -4838,6 +5995,22 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
+func (ec *executionContext) unmarshalOFloat2ᚖfloat64(ctx context.Context, v interface{}) (*float64, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalFloat(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOFloat2ᚖfloat64(ctx context.Context, sel ast.SelectionSet, v *float64) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	res := graphql.MarshalFloat(*v)
+	return res
+}
+
 func (ec *executionContext) unmarshalOString2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
 	if v == nil {
 		return nil, nil
@@ -4851,6 +6024,22 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 		return graphql.Null
 	}
 	res := graphql.MarshalString(*v)
+	return res
+}
+
+func (ec *executionContext) unmarshalOTime2ᚖtimeᚐTime(ctx context.Context, v interface{}) (*time.Time, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalTime(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOTime2ᚖtimeᚐTime(ctx context.Context, sel ast.SelectionSet, v *time.Time) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	res := graphql.MarshalTime(*v)
 	return res
 }
 

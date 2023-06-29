@@ -7,9 +7,7 @@ import (
 	"time"
 )
 
-type DateTime struct{}
-
-// Parse : custom parser of RFC3339 time format (e.g.: 2006-01-02T15:04:05Z)
+// DatetimeParse : custom parser of RFC3339 time format (e.g.: 2006-01-02T15:04:05Z)
 func DatetimeParse(datetimeStr string) (*time.Time, error) {
 	layoutParts := strings.Split(datetimeStr, "T")
 	dateParts := strings.Split(layoutParts[0], "-")
@@ -56,4 +54,13 @@ func DatetimeParse(datetimeStr string) (*time.Time, error) {
 	parsedDatetime := time.Date(year, time.Month(month), day, hours, minutes, seconds, 0, time.UTC)
 
 	return &parsedDatetime, nil
+}
+
+// ValueOrNilDatetime : returns defaultValue if it's not null or value
+func ValueOrNilDatetime(value time.Time, defaultValue *time.Time) *time.Time {
+	if defaultValue == nil {
+		return &value
+	}
+
+	return defaultValue
 }

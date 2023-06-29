@@ -1,4 +1,5 @@
 type Query {
-  getPosts: [Post!]!
-  getAllJobs: [Job!]!
+  getTradings: [Trading!]!
+  getTradingByID(id: String!): Trading!
+  getJobs: [Job!]!
 }

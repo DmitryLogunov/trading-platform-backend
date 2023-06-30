@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/joho/godotenv"
 	"log"
 	"net/http"
@@ -8,12 +9,13 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-
 	graphqlApi "github.com/DmitryLogunov/trading-platform/internal/app/graphql-api"
 	gqlServices "github.com/DmitryLogunov/trading-platform/internal/app/graphql-api/gql-services"
 	"github.com/DmitryLogunov/trading-platform/internal/app/graphql-api/resolvers"
 	"github.com/DmitryLogunov/trading-platform/internal/core/database/mongodb"
 	"github.com/DmitryLogunov/trading-platform/internal/core/scheduler"
+	"github.com/go-chi/chi"
+	"github.com/rs/cors"
 )
 
 const defaultPort = "3000"
@@ -40,16 +42,30 @@ func main() {
 	graphQLServices := gqlServices.GqlServices{}
 	graphQLServices.Init()
 
+	router := chi.NewRouter()
+
+	// Add CORS middleware around every request
+	// See https://github.com/rs/cors for full option listing
+	router.Use(cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:8080"},
+		AllowCredentials: true,
+		Debug:            true,
+	}).Handler)
+
 	var srv = handler.NewDefaultServer(graphqlApi.NewExecutableSchema(graphqlApi.Config{Resolvers: &resolvers.Resolver{
 		MongoDB:     mongoDB,
 		Scheduler:   &scheduler,
 		GqlServices: &graphQLServices,
 	}}))
 
-	http.Handle("/playground", playground.Handler("GraphQL playground", "/playground"))
-	http.Handle("/graphql", srv)
+	router.Handle("/playground", playground.Handler("GraphQL playground", "/playground"))
+	router.Handle("/graphql", srv)
+
+	err = http.ListenAndServe(fmt.Sprintf(":%s", port), router)
+	if err != nil {
+		panic(err)
+	}
 
 	log.Printf("connect to http://localhost:%s/graphql for GraphQL queries", port)
 	log.Printf("connect to http://localhost:%s/playground for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
 }

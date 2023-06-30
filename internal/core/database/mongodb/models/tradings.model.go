@@ -6,6 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"time"
 )
 
@@ -54,7 +55,10 @@ func (t *Trading) CreateTrading(ctx context.Context, db *mongo.Database, input *
 
 // GetTradings : returns posts
 func (t *Trading) GetTradings(ctx context.Context, db *mongo.Database) ([]*Trading, error) {
-	cursor, err := t.getCollection(db).Find(ctx, bson.M{})
+	findOptions := options.Find()
+	findOptions.SetSort(bson.D{{"started_at", -1}})
+
+	cursor, err := t.getCollection(db).Find(ctx, bson.M{}, findOptions)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
@@ -129,13 +133,30 @@ func (t *Trading) UpdateTrading(ctx context.Context, db *mongo.Database, id stri
 			{"closed_at", input.ClosedAt},
 		}}}
 
-	res, err := t.getCollection(db).UpdateOne(ctx, bson.D{{"_id", parsedId}}, updateTradingBsonData)
+	resMainRequest, err := t.getCollection(db).UpdateOne(ctx, bson.D{{"_id", parsedId}}, updateTradingBsonData)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
 	}
 
-	if res.ModifiedCount != 1 {
+	resClosedRefreshModifiedCount := int64(0)
+	if input.ClosedAt == time.Unix(0, 0).UTC() {
+		updateTradingBsonData := bson.D{{
+			"$unset",
+			bson.D{
+				{"closed_at", ""},
+			}}}
+
+		resClosedRefreshRequest, err := t.getCollection(db).UpdateOne(ctx, bson.D{{"_id", parsedId}}, updateTradingBsonData)
+		if err != nil {
+			fmt.Println(err)
+			return nil, err
+		}
+
+		resClosedRefreshModifiedCount = resClosedRefreshRequest.ModifiedCount
+	}
+
+	if resMainRequest.ModifiedCount+resClosedRefreshModifiedCount < 1 {
 		return nil, fmt.Errorf("updating failed")
 	}
 

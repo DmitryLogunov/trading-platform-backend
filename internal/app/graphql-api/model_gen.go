@@ -6,6 +6,23 @@ import (
 	"time"
 )
 
+type Alert struct {
+	ID        string    `json:"id"`
+	Title     string    `json:"title"`
+	Ticker    string    `json:"ticker"`
+	Action    int       `json:"action"`
+	Price     float64   `json:"price"`
+	CreatedAt time.Time `json:"createdAt"`
+}
+
+type AlertsFiltersInput struct {
+	Title         *string `json:"title,omitempty"`
+	Ticker        *string `json:"ticker,omitempty"`
+	Action        *string `json:"action,omitempty"`
+	CreatedAtFrom *string `json:"createdAtFrom,omitempty"`
+	CreatedAtTo   *string `json:"createdAtTo,omitempty"`
+}
+
 type CronPeriodInput struct {
 	Unit     string `json:"unit"`
 	Interval int    `json:"interval"`
@@ -41,29 +58,12 @@ type JobParamObject struct {
 	Value int    `json:"value"`
 }
 
-type NewPost struct {
-	Title   string `json:"title"`
-	Content string `json:"content"`
-	Author  string `json:"author"`
-	Hero    string `json:"hero"`
-}
-
 type NewTradingInput struct {
 	Exchange                  string  `json:"exchange"`
 	BaseCurrency              string  `json:"baseCurrency"`
 	SecondaryCurrency         string  `json:"secondaryCurrency"`
 	BaseDepositInBaseCurrency float64 `json:"baseDepositInBaseCurrency"`
 	StartedAt                 *string `json:"startedAt,omitempty"`
-}
-
-type Post struct {
-	ID          string    `json:"id"`
-	Title       string    `json:"title"`
-	Content     string    `json:"content"`
-	Author      string    `json:"author"`
-	Hero        string    `json:"hero"`
-	PublishedAt time.Time `json:"publishedAt"`
-	UpdatedAt   time.Time `json:"updatedAt"`
 }
 
 type Trading struct {

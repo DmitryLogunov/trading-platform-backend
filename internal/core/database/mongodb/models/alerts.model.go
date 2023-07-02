@@ -6,6 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"time"
 )
 
@@ -19,15 +20,15 @@ type Alert struct {
 }
 
 type DatetimeComparingFilter struct {
-	start time.Time
-	end   time.Time
+	From *time.Time
+	To   *time.Time
 }
 
 type AlertsFilters struct {
 	Title     string
 	Ticker    string
 	Action    uint
-	CreatedAt DatetimeComparingFilter
+	CreatedAt *DatetimeComparingFilter
 }
 
 // getCollection: returns "posts" mongodb collection
@@ -60,7 +61,34 @@ func (a *Alert) Save(ctx context.Context, db *mongo.Database, input *Alert) (*Al
 
 // Find : returns alerts using filters
 func (a *Alert) Find(ctx context.Context, db *mongo.Database, filters *AlertsFilters) ([]*Alert, error) {
-	cursor, err := a.getCollection(db).Find(ctx, bson.M{})
+	var filtersElements []bson.D = make([]bson.D, 0)
+
+	if filters.Title != "" {
+		filtersElements = append(filtersElements, bson.D{{"title", bson.D{{"$eq", filters.Title}}}})
+	}
+
+	if filters.Ticker != "" {
+		filtersElements = append(filtersElements, bson.D{{"ticker", bson.D{{"$eq", filters.Ticker}}}})
+	}
+
+	if filters.Action != 2 {
+		filtersElements = append(filtersElements, bson.D{{"action", bson.D{{"$eq", filters.Action}}}})
+	}
+
+	filtersElements = append(filtersElements, bson.D{{"created_at", bson.D{{
+		"$gte",
+		primitive.NewDateTimeFromTime(*filters.CreatedAt.From),
+	}}}})
+
+	filtersElements = append(filtersElements, bson.D{{"created_at", bson.D{{
+		"$lte",
+		primitive.NewDateTimeFromTime(*filters.CreatedAt.To),
+	}}}})
+
+	findOptions := options.Find()
+	findOptions.SetSort(bson.D{{"created_at", -1}})
+
+	cursor, err := a.getCollection(db).Find(ctx, bson.M{"$and": filtersElements}, findOptions)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err

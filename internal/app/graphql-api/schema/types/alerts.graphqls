@@ -1,0 +1,16 @@
+type Alert {
+  id:        String!
+  title:     String!
+  ticker:    String!
+  action:    Int!
+  price:     Float!
+  createdAt: Time!
+}
+
+input AlertsFiltersInput {
+   title: String
+   ticker: String
+   action: String
+   createdAtFrom: String
+   createdAtTo: String
+}

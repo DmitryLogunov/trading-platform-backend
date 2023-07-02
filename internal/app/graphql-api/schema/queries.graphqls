@@ -2,4 +2,5 @@ type Query {
   getTradings: [Trading!]!
   getTradingByID(id: String!): Trading!
   getJobs: [Job!]!
+  getAlerts(filters: AlertsFiltersInput): [Alert!]!
 }

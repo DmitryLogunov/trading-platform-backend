@@ -25,6 +25,11 @@ func (r *queryResolver) GetJobs(ctx context.Context) ([]*graphqlApi.Job, error) 
 	return r.GqlServices.JobsService.GetAllJobs(r.Scheduler)
 }
 
+// GetAlerts is the resolver for the getAlerts field.
+func (r *queryResolver) GetAlerts(ctx context.Context, filters *graphqlApi.AlertsFiltersInput) ([]*graphqlApi.Alert, error) {
+	return r.GqlServices.AlertsService.GetAlerts(ctx, r.MongoDB, filters)
+}
+
 // Query returns graphqlApi.QueryResolver implementation.
 func (r *Resolver) Query() graphqlApi.QueryResolver { return &queryResolver{r} }
 

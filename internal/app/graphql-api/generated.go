@@ -461,7 +461,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Position.SecondaryCurrency(childComplexity), true
 
-	case "Position.tradingID":
+	case "Position.tradingId":
 		if e.complexity.Position.TradingID == nil {
 			break
 		}
@@ -509,7 +509,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetPositions(childComplexity, args["tradingID"].(string)), true
+		return e.complexity.Query.GetPositions(childComplexity, args["tradingId"].(string)), true
 
 	case "Query.getTradingByID":
 		if e.complexity.Query.GetTradingByID == nil {
@@ -914,14 +914,14 @@ func (ec *executionContext) field_Query_getPositions_args(ctx context.Context, r
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["tradingID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tradingID"))
+	if tmp, ok := rawArgs["tradingId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tradingId"))
 		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["tradingID"] = arg0
+	args["tradingId"] = arg0
 	return args, nil
 }
 
@@ -2046,8 +2046,8 @@ func (ec *executionContext) fieldContext_Mutation_openPosition(ctx context.Conte
 			switch field.Name {
 			case "id":
 				return ec.fieldContext_Position_id(ctx, field)
-			case "tradingID":
-				return ec.fieldContext_Position_tradingID(ctx, field)
+			case "tradingId":
+				return ec.fieldContext_Position_tradingId(ctx, field)
 			case "baseCurrency":
 				return ec.fieldContext_Position_baseCurrency(ctx, field)
 			case "secondaryCurrency":
@@ -2121,8 +2121,8 @@ func (ec *executionContext) fieldContext_Mutation_closePosition(ctx context.Cont
 			switch field.Name {
 			case "id":
 				return ec.fieldContext_Position_id(ctx, field)
-			case "tradingID":
-				return ec.fieldContext_Position_tradingID(ctx, field)
+			case "tradingId":
+				return ec.fieldContext_Position_tradingId(ctx, field)
 			case "baseCurrency":
 				return ec.fieldContext_Position_baseCurrency(ctx, field)
 			case "secondaryCurrency":
@@ -2474,8 +2474,8 @@ func (ec *executionContext) fieldContext_Position_id(ctx context.Context, field 
 	return fc, nil
 }
 
-func (ec *executionContext) _Position_tradingID(ctx context.Context, field graphql.CollectedField, obj *Position) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Position_tradingID(ctx, field)
+func (ec *executionContext) _Position_tradingId(ctx context.Context, field graphql.CollectedField, obj *Position) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Position_tradingId(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -2505,7 +2505,7 @@ func (ec *executionContext) _Position_tradingID(ctx context.Context, field graph
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Position_tradingID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Position_tradingId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Position",
 		Field:      field,
@@ -3144,8 +3144,8 @@ func (ec *executionContext) fieldContext_Query_getPositionByID(ctx context.Conte
 			switch field.Name {
 			case "id":
 				return ec.fieldContext_Position_id(ctx, field)
-			case "tradingID":
-				return ec.fieldContext_Position_tradingID(ctx, field)
+			case "tradingId":
+				return ec.fieldContext_Position_tradingId(ctx, field)
 			case "baseCurrency":
 				return ec.fieldContext_Position_baseCurrency(ctx, field)
 			case "secondaryCurrency":
@@ -3192,7 +3192,7 @@ func (ec *executionContext) _Query_getPositions(ctx context.Context, field graph
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetPositions(rctx, fc.Args["tradingID"].(string))
+		return ec.resolvers.Query().GetPositions(rctx, fc.Args["tradingId"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3219,8 +3219,8 @@ func (ec *executionContext) fieldContext_Query_getPositions(ctx context.Context,
 			switch field.Name {
 			case "id":
 				return ec.fieldContext_Position_id(ctx, field)
-			case "tradingID":
-				return ec.fieldContext_Position_tradingID(ctx, field)
+			case "tradingId":
+				return ec.fieldContext_Position_tradingId(ctx, field)
 			case "baseCurrency":
 				return ec.fieldContext_Position_baseCurrency(ctx, field)
 			case "secondaryCurrency":
@@ -5931,17 +5931,17 @@ func (ec *executionContext) unmarshalInputOpenPositionInput(ctx context.Context,
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"tradingID", "baseCurrencyAmount", "price", "createdAt"}
+	fieldsInOrder := [...]string{"tradingId", "baseCurrencyAmount", "price", "createdAt"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
-		case "tradingID":
+		case "tradingId":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tradingID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tradingId"))
 			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
@@ -6460,8 +6460,8 @@ func (ec *executionContext) _Position(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "tradingID":
-			out.Values[i] = ec._Position_tradingID(ctx, field, obj)
+		case "tradingId":
+			out.Values[i] = ec._Position_tradingId(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}

@@ -7,5 +7,5 @@ type Query {
   getAlerts(filters: AlertsFiltersInput): [Alert!]!
 
   getPositionByID(id: String!): Position!
-  getPositions(tradingID: String!): [Position!]!
+  getPositions(tradingId: String!): [Position!]!
 }

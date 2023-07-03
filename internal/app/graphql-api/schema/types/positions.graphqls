@@ -8,7 +8,7 @@ type Order {
 
 type Position {
   id:                    String!
-  tradingID:             String!
+  tradingId:             String!
   baseCurrency:          String!
   secondaryCurrency:     String!
   orders:                [Order!]!
@@ -19,7 +19,7 @@ type Position {
 }
 
 input OpenPositionInput {
-  tradingID:             String!
+  tradingId:             String!
   baseCurrencyAmount:    Float!
   price:                 Float!
   createdAt:             String

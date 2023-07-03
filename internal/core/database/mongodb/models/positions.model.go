@@ -21,7 +21,7 @@ type Order struct {
 }
 
 type OpenPositionData struct {
-	TradingID          string     `bson:"trading_id",gorm:"not null"`
+	TradingId          string     `bson:"trading_id",gorm:"not null"`
 	BaseCurrencyAmount float32    `bson:"source_currency_amount",gorm:"not null"`
 	Price              float32    `bson:"price",gorm:"not null"`
 	CreatedAt          *time.Time `bson:"created_at"`
@@ -35,7 +35,7 @@ type ClosePositionData struct {
 
 type Position struct {
 	ID                primitive.ObjectID `bson:"_id,omitempty"`
-	TradingID         string             `bson:"trading_id",gorm:"not null"`
+	TradingId         string             `bson:"trading_id",gorm:"not null"`
 	BaseCurrency      string             `bson:"base_currency",gorm:"not null"`
 	SecondaryCurrency string             `bson:"second_currency",gorm:"not null"`
 	Orders            map[uint]*Order    `bson:"orders",gorm:"not null"`
@@ -55,7 +55,7 @@ func (p *Position) getCollection(db *mongo.Database) *mongo.Collection {
 // OpenPosition : created and saves position item on MongoDB
 func (p *Position) OpenPosition(ctx context.Context, db *mongo.Database, input *OpenPositionData) (*Position, error) {
 	tradingModelItem := &Trading{}
-	trading, err := tradingModelItem.GetTradingByID(ctx, db, input.TradingID)
+	trading, err := tradingModelItem.GetTradingByID(ctx, db, input.TradingId)
 	if err != nil || trading == nil {
 		return nil, fmt.Errorf("trading not found")
 	}
@@ -77,7 +77,7 @@ func (p *Position) OpenPosition(ctx context.Context, db *mongo.Database, input *
 	}
 
 	position := Position{
-		TradingID:         input.TradingID,
+		TradingId:         input.TradingId,
 		BaseCurrency:      trading.BaseCurrency,
 		SecondaryCurrency: trading.SecondaryCurrency,
 		Orders:            map[uint]*Order{actionsEnum.Buy: openPositionOrder},
@@ -190,11 +190,11 @@ func (p *Position) GetPositionByID(ctx context.Context, db *mongo.Database, id s
 }
 
 // Find : returns alerts using filters
-func (p *Position) Find(ctx context.Context, db *mongo.Database, tradingId string) ([]*Position, error) {
+func (p *Position) Find(ctx context.Context, db *mongo.Database, TradingId string) ([]*Position, error) {
 	findOptions := options.Find()
 	findOptions.SetSort(bson.D{{"created_at", -1}})
 
-	cursor, err := p.getCollection(db).Find(ctx, bson.D{{"trading_id", tradingId}}, findOptions)
+	cursor, err := p.getCollection(db).Find(ctx, bson.D{{"trading_id", TradingId}}, findOptions)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err

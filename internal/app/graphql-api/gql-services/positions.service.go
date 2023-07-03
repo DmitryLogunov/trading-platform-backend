@@ -28,7 +28,7 @@ func (ps *PositionsService) OpenPosition(ctx context.Context, mongoDB *mongo.Dat
 	}
 
 	openPositionData := mongodbModels.OpenPositionData{
-		TradingID:          input.TradingID,
+		TradingId:          input.TradingID,
 		BaseCurrencyAmount: float32(input.BaseCurrencyAmount),
 		Price:              float32(input.Price),
 		CreatedAt:          createdAt,
@@ -52,7 +52,7 @@ func (ps *PositionsService) OpenPosition(ctx context.Context, mongoDB *mongo.Dat
 
 	return &graphqlApi.Position{
 		ID:                newPosition.ID.Hex(),
-		TradingID:         newPosition.TradingID,
+		TradingID:         newPosition.TradingId,
 		BaseCurrency:      newPosition.BaseCurrency,
 		SecondaryCurrency: newPosition.SecondaryCurrency,
 		Orders:            []*graphqlApi.Order{gqlBuyOrder},
@@ -109,7 +109,7 @@ func (ps *PositionsService) ClosePosition(ctx context.Context, mongoDB *mongo.Da
 
 	return &graphqlApi.Position{
 		ID:                closedPosition.ID.Hex(),
-		TradingID:         closedPosition.TradingID,
+		TradingID:         closedPosition.TradingId,
 		BaseCurrency:      closedPosition.BaseCurrency,
 		SecondaryCurrency: closedPosition.SecondaryCurrency,
 		Orders:            []*graphqlApi.Order{gqlBuyOrder, gqlSellOrder},
@@ -127,11 +127,11 @@ func (ps *PositionsService) DeletePosition(ctx context.Context, mongoDB *mongo.D
 	return positionModelItem.DeletePosition(ctx, mongoDB, id)
 }
 
-// GetPositions : returns the list of all positions from DB by tradingID
-func (ps *PositionsService) GetPositions(ctx context.Context, mongoDB *mongo.Database, tradingID string) ([]*graphqlApi.Position, error) {
+// GetPositions : returns the list of all positions from DB by TradingId
+func (ps *PositionsService) GetPositions(ctx context.Context, mongoDB *mongo.Database, TradingId string) ([]*graphqlApi.Position, error) {
 	positionsModelItem := mongodbModels.Position{}
 
-	positions, err := positionsModelItem.Find(ctx, mongoDB, tradingID)
+	positions, err := positionsModelItem.Find(ctx, mongoDB, TradingId)
 
 	if err != nil {
 		fmt.Println(err)
@@ -167,7 +167,7 @@ func (ps *PositionsService) GetPositions(ctx context.Context, mongoDB *mongo.Dat
 
 		gqlPositions = append(gqlPositions, &graphqlApi.Position{
 			ID:                p.ID.Hex(),
-			TradingID:         p.TradingID,
+			TradingID:         p.TradingId,
 			BaseCurrency:      p.BaseCurrency,
 			SecondaryCurrency: p.SecondaryCurrency,
 			Orders:            orders,
@@ -217,7 +217,7 @@ func (ps *PositionsService) GetPositionByID(ctx context.Context, mongoDB *mongo.
 
 	return &graphqlApi.Position{
 		ID:                p.ID.Hex(),
-		TradingID:         p.TradingID,
+		TradingID:         p.TradingId,
 		BaseCurrency:      p.BaseCurrency,
 		SecondaryCurrency: p.SecondaryCurrency,
 		Orders:            orders,

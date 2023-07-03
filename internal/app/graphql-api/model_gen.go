@@ -73,7 +73,7 @@ type NewTradingInput struct {
 }
 
 type OpenPositionInput struct {
-	TradingID          string  `json:"tradingID"`
+	TradingID          string  `json:"tradingId"`
 	BaseCurrencyAmount float64 `json:"baseCurrencyAmount"`
 	Price              float64 `json:"price"`
 	CreatedAt          *string `json:"createdAt,omitempty"`
@@ -89,7 +89,7 @@ type Order struct {
 
 type Position struct {
 	ID                string     `json:"id"`
-	TradingID         string     `json:"tradingID"`
+	TradingID         string     `json:"tradingId"`
 	BaseCurrency      string     `json:"baseCurrency"`
 	SecondaryCurrency string     `json:"secondaryCurrency"`
 	Orders            []*Order   `json:"orders"`

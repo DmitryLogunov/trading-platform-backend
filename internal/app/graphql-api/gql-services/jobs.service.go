@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"log"
 
-	graphqlApi "github.com/DmitryLogunov/trading-platform/internal/app/graphql-api"
-	"github.com/DmitryLogunov/trading-platform/internal/core/scheduler"
-	cronPeriodUnits "github.com/DmitryLogunov/trading-platform/internal/core/scheduler/enums/cron-period-units"
-	jobStatuses "github.com/DmitryLogunov/trading-platform/internal/core/scheduler/enums/jobs-statuses"
+	graphqlApi "github.com/DmitryLogunov/trading-platform-backend/internal/app/graphql-api"
+	"github.com/DmitryLogunov/trading-platform-backend/internal/core/scheduler"
+	cronPeriodUnits "github.com/DmitryLogunov/trading-platform-backend/internal/core/scheduler/enums/cron-period-units"
+	jobStatuses "github.com/DmitryLogunov/trading-platform-backend/internal/core/scheduler/enums/jobs-statuses"
 )
 
 type JobsService struct{}

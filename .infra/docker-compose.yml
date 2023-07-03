@@ -55,7 +55,7 @@ volumes:
   mongodb-config:
 
 networks:
-  golang-graphql-todolist-net:
+  trading-platform-backend-net:
     external: false
     driver: bridge
-    name: golang-graphql-api-todolist-net
+    name: trading-platform-backend-net

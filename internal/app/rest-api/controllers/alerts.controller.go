@@ -3,10 +3,10 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/DmitryLogunov/trading-platform/internal/app/rest-api/dto"
-	alertActions "github.com/DmitryLogunov/trading-platform/internal/core/database/mongodb/enums/alert-actions"
-	mongodbModels "github.com/DmitryLogunov/trading-platform/internal/core/database/mongodb/models"
-	"github.com/DmitryLogunov/trading-platform/internal/core/helpers"
+	"github.com/DmitryLogunov/trading-platform-backend/internal/app/rest-api/dto"
+	alertActions "github.com/DmitryLogunov/trading-platform-backend/internal/core/database/mongodb/enums/alert-actions"
+	mongodbModels "github.com/DmitryLogunov/trading-platform-backend/internal/core/database/mongodb/models"
+	"github.com/DmitryLogunov/trading-platform-backend/internal/core/helpers"
 	"net/http"
 	"strconv"
 )

@@ -8,7 +8,7 @@ import (
 	"context"
 	"fmt"
 
-	graphqlApi "github.com/DmitryLogunov/trading-platform/internal/app/graphql-api"
+	graphqlApi "github.com/DmitryLogunov/trading-platform-backend/internal/app/graphql-api"
 )
 
 // CreateTrading is the resolver for the createTrading field.

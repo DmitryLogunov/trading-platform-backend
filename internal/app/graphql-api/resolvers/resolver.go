@@ -1,8 +1,8 @@
 package resolvers
 
 import (
-	"github.com/DmitryLogunov/trading-platform/internal/app/graphql-api/gql-services"
-	"github.com/DmitryLogunov/trading-platform/internal/core/scheduler"
+	"github.com/DmitryLogunov/trading-platform-backend/internal/app/graphql-api/gql-services"
+	"github.com/DmitryLogunov/trading-platform-backend/internal/core/scheduler"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 

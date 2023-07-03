@@ -1,8 +1,8 @@
 package main
 
 import (
-	restApi "github.com/DmitryLogunov/trading-platform/internal/app/rest-api"
-	"github.com/DmitryLogunov/trading-platform/internal/core/database/mongodb"
+	restApi "github.com/DmitryLogunov/trading-platform-backend/internal/app/rest-api"
+	"github.com/DmitryLogunov/trading-platform-backend/internal/core/database/mongodb"
 	"github.com/joho/godotenv"
 	"log"
 )

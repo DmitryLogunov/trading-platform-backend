@@ -1,4 +1,4 @@
-module github.com/DmitryLogunov/trading-platform
+module github.com/DmitryLogunov/trading-platform-backend
 
 go 1.20
 

@@ -3,9 +3,9 @@ package gqlServices
 import (
 	"context"
 	"fmt"
-	graphqlApi "github.com/DmitryLogunov/trading-platform/internal/app/graphql-api"
-	mongodbModels "github.com/DmitryLogunov/trading-platform/internal/core/database/mongodb/models"
-	"github.com/DmitryLogunov/trading-platform/internal/core/helpers"
+	graphqlApi "github.com/DmitryLogunov/trading-platform-backend/internal/app/graphql-api"
+	mongodbModels "github.com/DmitryLogunov/trading-platform-backend/internal/core/database/mongodb/models"
+	"github.com/DmitryLogunov/trading-platform-backend/internal/core/helpers"
 	"go.mongodb.org/mongo-driver/mongo"
 	"time"
 )

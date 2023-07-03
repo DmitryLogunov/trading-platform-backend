@@ -7,7 +7,7 @@ package resolvers
 import (
 	"context"
 
-	graphqlApi "github.com/DmitryLogunov/trading-platform/internal/app/graphql-api"
+	graphqlApi "github.com/DmitryLogunov/trading-platform-backend/internal/app/graphql-api"
 )
 
 // GetTradings is the resolver for the getTradings field.

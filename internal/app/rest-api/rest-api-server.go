@@ -2,8 +2,8 @@ package rest_api
 
 import (
 	"fmt"
-	"github.com/DmitryLogunov/trading-platform/internal/app/rest-api/controllers"
-	"github.com/DmitryLogunov/trading-platform/internal/app/rest-api/routes"
+	"github.com/DmitryLogunov/trading-platform-backend/internal/app/rest-api/controllers"
+	"github.com/DmitryLogunov/trading-platform-backend/internal/app/rest-api/routes"
 	"go.mongodb.org/mongo-driver/mongo"
 	"log"
 	"net/http"

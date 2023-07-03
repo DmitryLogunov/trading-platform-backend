@@ -3,7 +3,7 @@ package scheduler
 import (
 	"errors"
 	"fmt"
-	jobStatuses "github.com/DmitryLogunov/trading-platform/internal/core/scheduler/enums/jobs-statuses"
+	jobStatuses "github.com/DmitryLogunov/trading-platform-backend/internal/core/scheduler/enums/jobs-statuses"
 	"github.com/go-co-op/gocron"
 	"github.com/google/uuid"
 	"log"

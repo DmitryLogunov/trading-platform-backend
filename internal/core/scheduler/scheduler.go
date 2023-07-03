@@ -3,8 +3,8 @@ package scheduler
 import (
 	"errors"
 	"fmt"
-	cronPeriodUnits "github.com/DmitryLogunov/trading-platform/internal/core/scheduler/enums/cron-period-units"
-	jobsStatuses "github.com/DmitryLogunov/trading-platform/internal/core/scheduler/enums/jobs-statuses"
+	cronPeriodUnits "github.com/DmitryLogunov/trading-platform-backend/internal/core/scheduler/enums/cron-period-units"
+	jobsStatuses "github.com/DmitryLogunov/trading-platform-backend/internal/core/scheduler/enums/jobs-statuses"
 	"log"
 	"time"
 

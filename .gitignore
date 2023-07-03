@@ -9,7 +9,8 @@
 
 # Go workspace file
 go.work
-trading-platform-api
+trading-platform-graphql-api
+trading-platform-rest-api
 tmp
 
 .env

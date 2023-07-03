@@ -9,11 +9,11 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	graphqlApi "github.com/DmitryLogunov/trading-platform/internal/app/graphql-api"
-	gqlServices "github.com/DmitryLogunov/trading-platform/internal/app/graphql-api/gql-services"
-	"github.com/DmitryLogunov/trading-platform/internal/app/graphql-api/resolvers"
-	"github.com/DmitryLogunov/trading-platform/internal/core/database/mongodb"
-	"github.com/DmitryLogunov/trading-platform/internal/core/scheduler"
+	graphqlApi "github.com/DmitryLogunov/trading-platform-backend/internal/app/graphql-api"
+	gqlServices "github.com/DmitryLogunov/trading-platform-backend/internal/app/graphql-api/gql-services"
+	"github.com/DmitryLogunov/trading-platform-backend/internal/app/graphql-api/resolvers"
+	"github.com/DmitryLogunov/trading-platform-backend/internal/core/database/mongodb"
+	"github.com/DmitryLogunov/trading-platform-backend/internal/core/scheduler"
 	"github.com/go-chi/chi"
 	"github.com/rs/cors"
 )

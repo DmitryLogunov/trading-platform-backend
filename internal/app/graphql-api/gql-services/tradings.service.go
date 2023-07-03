@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	graphqlApi "github.com/DmitryLogunov/trading-platform-backend/internal/app/graphql-api"
+	actionsEnum "github.com/DmitryLogunov/trading-platform-backend/internal/core/database/mongodb/enums/actions"
 	mongodbModels "github.com/DmitryLogunov/trading-platform-backend/internal/core/database/mongodb/models"
 	"github.com/DmitryLogunov/trading-platform-backend/internal/core/helpers"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -67,7 +68,7 @@ func (ts *TradingService) UpdateTrading(ctx context.Context, mongoDB *mongo.Data
 	}
 
 	var closedAt *time.Time
-	if *input.ClosedAt == "null" {
+	if input.ClosedAt != nil && *input.ClosedAt == "null" {
 		unixStartDatetime := time.Unix(0, 0).UTC()
 		closedAt = &unixStartDatetime
 	} else if input.ClosedAt != nil {
@@ -166,4 +167,66 @@ func (ts *TradingService) GetTradingByID(ctx context.Context, mongoDB *mongo.Dat
 	}
 
 	return gqlTrading, nil
+}
+
+// RefreshTrading : refreshes trading ROI and current balances
+func (ts *TradingService) RefreshTrading(ctx context.Context, mongoDB *mongo.Database, id string) (*graphqlApi.Trading, error) {
+	trading, err := ts.GetTradingByID(ctx, mongoDB, id)
+	if err != nil {
+		return nil, err
+	}
+
+	positionsModelItem := &mongodbModels.Position{}
+	tradingPositions, err := positionsModelItem.Find(ctx, mongoDB, trading.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(tradingPositions) == 0 {
+		return trading, nil
+	}
+
+	firstPosition := tradingPositions[len(tradingPositions)-1]
+	lastPosition := tradingPositions[0]
+	var lastClosedPosition *mongodbModels.Position
+
+	for _, p := range tradingPositions {
+		if lastClosedPosition == nil && p.ClosedAt != nil {
+			lastClosedPosition = p
+			break
+		}
+	}
+
+	var currentDepositInBaseCurrency float64
+	var currentDepositInSecondaryCurrency float64
+	var roiInPercent float64
+	var roiInBaseCurrency float64
+
+	if lastClosedPosition != nil {
+		startBaseCurrencyAmount := firstPosition.Orders[actionsEnum.Buy].SourceCurrencyAmount
+		finalLastClosedPositionBaseCurrencyAmount := lastClosedPosition.Orders[actionsEnum.Sell].TargetCurrencyAmount
+
+		roiInPercent = float64((finalLastClosedPositionBaseCurrencyAmount - startBaseCurrencyAmount) / startBaseCurrencyAmount)
+		roiInBaseCurrency = float64(finalLastClosedPositionBaseCurrencyAmount - startBaseCurrencyAmount)
+	} else {
+		roiInPercent = float64(0)
+		roiInBaseCurrency = float64(0)
+	}
+
+	if lastPosition.ClosedAt == nil {
+		currentDepositInBaseCurrency = float64(0)
+		currentDepositInSecondaryCurrency = float64(lastPosition.Orders[actionsEnum.Buy].TargetCurrencyAmount)
+	} else {
+		currentDepositInBaseCurrency = float64(lastPosition.Orders[actionsEnum.Sell].TargetCurrencyAmount)
+		currentDepositInSecondaryCurrency = float64(0)
+	}
+
+	return ts.UpdateTrading(ctx, mongoDB, graphqlApi.UpdateTradingInput{
+		ID:                                id,
+		BaseDepositInBaseCurrency:         &trading.BaseDepositInBaseCurrency,
+		CurrentDepositInBaseCurrency:      &currentDepositInBaseCurrency,
+		CurrentDepositInSecondaryCurrency: &currentDepositInSecondaryCurrency,
+		RoiInPercent:                      &roiInPercent,
+		RoiInBaseCurrency:                 &roiInBaseCurrency,
+	})
 }

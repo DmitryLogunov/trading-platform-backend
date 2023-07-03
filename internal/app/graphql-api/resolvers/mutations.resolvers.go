@@ -21,6 +21,11 @@ func (r *mutationResolver) UpdateTrading(ctx context.Context, input graphqlApi.U
 	return r.GqlServices.TradingService.UpdateTrading(ctx, r.MongoDB, input)
 }
 
+// RefreshTrading is the resolver for the refreshTrading field.
+func (r *mutationResolver) RefreshTrading(ctx context.Context, id string) (*graphqlApi.Trading, error) {
+	return r.GqlServices.TradingService.RefreshTrading(ctx, r.MongoDB, id)
+}
+
 // DeleteTrading is the resolver for the deleteTrading field.
 func (r *mutationResolver) DeleteTrading(ctx context.Context, id string) (string, error) {
 	if res, err := r.GqlServices.TradingService.DeleteTrading(ctx, r.MongoDB, id); !res && err != nil {

@@ -40,6 +40,25 @@ func (r *mutationResolver) StopJob(ctx context.Context, tag string) (string, err
 	return r.GqlServices.JobsService.StopJob(r.Scheduler, tag)
 }
 
+// OpenPosition is the resolver for the openPosition field.
+func (r *mutationResolver) OpenPosition(ctx context.Context, input graphqlApi.OpenPositionInput) (*graphqlApi.Position, error) {
+	return r.GqlServices.PositionsService.OpenPosition(ctx, r.MongoDB, input)
+}
+
+// ClosePosition is the resolver for the closePosition field.
+func (r *mutationResolver) ClosePosition(ctx context.Context, input graphqlApi.ClosePositionInput) (*graphqlApi.Position, error) {
+	return r.GqlServices.PositionsService.ClosePosition(ctx, r.MongoDB, input)
+}
+
+// DeletePosition is the resolver for the deletePosition field.
+func (r *mutationResolver) DeletePosition(ctx context.Context, id string) (string, error) {
+	if res, err := r.GqlServices.PositionsService.DeletePosition(ctx, r.MongoDB, id); !res && err != nil {
+		return fmt.Sprintf("ERROR: %s", err), err
+	}
+
+	return "OK", nil
+}
+
 // Mutation returns graphqlApi.MutationResolver implementation.
 func (r *Resolver) Mutation() graphqlApi.MutationResolver { return &mutationResolver{r} }
 

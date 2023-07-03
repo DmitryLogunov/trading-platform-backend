@@ -23,6 +23,12 @@ type AlertsFiltersInput struct {
 	CreatedAtTo   *string `json:"createdAtTo,omitempty"`
 }
 
+type ClosePositionInput struct {
+	ID       string  `json:"id"`
+	Price    float64 `json:"price"`
+	ClosedAt *string `json:"closedAt,omitempty"`
+}
+
 type CronPeriodInput struct {
 	Unit     string `json:"unit"`
 	Interval int    `json:"interval"`
@@ -64,6 +70,33 @@ type NewTradingInput struct {
 	SecondaryCurrency         string  `json:"secondaryCurrency"`
 	BaseDepositInBaseCurrency float64 `json:"baseDepositInBaseCurrency"`
 	StartedAt                 *string `json:"startedAt,omitempty"`
+}
+
+type OpenPositionInput struct {
+	TradingID          string  `json:"tradingID"`
+	BaseCurrencyAmount float64 `json:"baseCurrencyAmount"`
+	Price              float64 `json:"price"`
+	CreatedAt          *string `json:"createdAt,omitempty"`
+}
+
+type Order struct {
+	Action               int       `json:"action"`
+	SourceCurrencyAmount float64   `json:"sourceCurrencyAmount"`
+	TargetCurrencyAmount float64   `json:"targetCurrencyAmount"`
+	Price                float64   `json:"price"`
+	CreatedAt            time.Time `json:"createdAt"`
+}
+
+type Position struct {
+	ID                string     `json:"id"`
+	TradingID         string     `json:"tradingID"`
+	BaseCurrency      string     `json:"baseCurrency"`
+	SecondaryCurrency string     `json:"secondaryCurrency"`
+	Orders            []*Order   `json:"orders"`
+	RoiInPercent      *float64   `json:"roiInPercent,omitempty"`
+	RoiInBaseCurrency *float64   `json:"roiInBaseCurrency,omitempty"`
+	CreatedAt         time.Time  `json:"createdAt"`
+	ClosedAt          *time.Time `json:"closedAt,omitempty"`
 }
 
 type Trading struct {

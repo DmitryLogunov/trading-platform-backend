@@ -1,0 +1,32 @@
+type Order {
+   action:               Int!
+   sourceCurrencyAmount: Float!
+   targetCurrencyAmount: Float!
+   price:                Float!
+   createdAt:            Time!
+}
+
+type Position {
+  id:                    String!
+  tradingID:             String!
+  baseCurrency:          String!
+  secondaryCurrency:     String!
+  orders:                [Order!]!
+  roiInPercent:          Float
+  roiInBaseCurrency:     Float
+  createdAt:             Time!
+  closedAt:              Time
+}
+
+input OpenPositionInput {
+  tradingID:             String!
+  baseCurrencyAmount:    Float!
+  price:                 Float!
+  createdAt:             String
+}
+
+input ClosePositionInput {
+  id:                    String!
+  price:                 Float!
+  closedAt:              String
+}

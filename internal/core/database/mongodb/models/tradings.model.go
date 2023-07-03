@@ -125,7 +125,6 @@ func (t *Trading) UpdateTrading(ctx context.Context, db *mongo.Database, id stri
 	updateTradingBsonData := bson.D{{
 		"$set",
 		bson.D{
-			{"base_deposit_in_base_currency", input.BaseDepositInBaseCurrency},
 			{"current_deposit_in_base_currency", input.CurrentDepositInBaseCurrency},
 			{"current_deposit_in_secondary_currency", input.CurrentDepositInSecondaryCurrency},
 			{"roi_in_percent", input.RoiInPercent},

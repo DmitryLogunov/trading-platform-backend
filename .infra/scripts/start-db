@@ -1,8 +1,8 @@
 #! /bin/bash
 
-echo "Restarting ..."
+echo "Mongo DB starting ..."
 
 ROOT_DIR=$(pwd)
 export $(cat ${ROOT_DIR}/.env)
 
-docker-compose -f .infra/docker-compose.yml up -d mongodb
+docker-compose -f .infra/docker-compose.mongodb.yml up -d mongodb

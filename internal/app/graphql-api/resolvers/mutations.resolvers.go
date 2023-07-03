@@ -21,6 +21,11 @@ func (r *mutationResolver) UpdateTrading(ctx context.Context, input graphqlApi.U
 	return r.GqlServices.TradingService.UpdateTrading(ctx, r.MongoDB, input)
 }
 
+// RefreshTrading is the resolver for the refreshTrading field.
+func (r *mutationResolver) RefreshTrading(ctx context.Context, id string) (*graphqlApi.Trading, error) {
+	return r.GqlServices.TradingService.RefreshTrading(ctx, r.MongoDB, id)
+}
+
 // DeleteTrading is the resolver for the deleteTrading field.
 func (r *mutationResolver) DeleteTrading(ctx context.Context, id string) (string, error) {
 	if res, err := r.GqlServices.TradingService.DeleteTrading(ctx, r.MongoDB, id); !res && err != nil {
@@ -38,6 +43,25 @@ func (r *mutationResolver) StartJob(ctx context.Context, input graphqlApi.JobDat
 // StopJob is the resolver for the stopJob field.
 func (r *mutationResolver) StopJob(ctx context.Context, tag string) (string, error) {
 	return r.GqlServices.JobsService.StopJob(r.Scheduler, tag)
+}
+
+// OpenPosition is the resolver for the openPosition field.
+func (r *mutationResolver) OpenPosition(ctx context.Context, input graphqlApi.OpenPositionInput) (*graphqlApi.Position, error) {
+	return r.GqlServices.PositionsService.OpenPosition(ctx, r.MongoDB, input)
+}
+
+// ClosePosition is the resolver for the closePosition field.
+func (r *mutationResolver) ClosePosition(ctx context.Context, input graphqlApi.ClosePositionInput) (*graphqlApi.Position, error) {
+	return r.GqlServices.PositionsService.ClosePosition(ctx, r.MongoDB, input)
+}
+
+// DeletePosition is the resolver for the deletePosition field.
+func (r *mutationResolver) DeletePosition(ctx context.Context, id string) (string, error) {
+	if res, err := r.GqlServices.PositionsService.DeletePosition(ctx, r.MongoDB, id); !res && err != nil {
+		return fmt.Sprintf("ERROR: %s", err), err
+	}
+
+	return "OK", nil
 }
 
 // Mutation returns graphqlApi.MutationResolver implementation.

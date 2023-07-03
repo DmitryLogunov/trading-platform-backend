@@ -30,6 +30,16 @@ func (r *queryResolver) GetAlerts(ctx context.Context, filters *graphqlApi.Alert
 	return r.GqlServices.AlertsService.GetAlerts(ctx, r.MongoDB, filters)
 }
 
+// GetPositionByID is the resolver for the getPositionByID field.
+func (r *queryResolver) GetPositionByID(ctx context.Context, id string) (*graphqlApi.Position, error) {
+	return r.GqlServices.PositionsService.GetPositionByID(ctx, r.MongoDB, id)
+}
+
+// GetPositions is the resolver for the getPositions field.
+func (r *queryResolver) GetPositions(ctx context.Context, tradingID string) ([]*graphqlApi.Position, error) {
+	return r.GqlServices.PositionsService.GetPositions(ctx, r.MongoDB, tradingID)
+}
+
 // Query returns graphqlApi.QueryResolver implementation.
 func (r *Resolver) Query() graphqlApi.QueryResolver { return &queryResolver{r} }
 

@@ -1,7 +1,13 @@
 type Mutation {
   createTrading(input: NewTradingInput!): Trading!
   updateTrading(input: UpdateTradingInput!): Trading!
+  refreshTrading(id: String!): Trading!
   deleteTrading(id: String!): String!
+
   startJob(input: JobData!): String!
   stopJob(tag: String!): String!
+
+  openPosition(input: OpenPositionInput!): Position!
+  closePosition(input: ClosePositionInput!): Position!
+  deletePosition(id: String!): String!
 }

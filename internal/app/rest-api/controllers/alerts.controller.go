@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/DmitryLogunov/trading-platform-backend/internal/app/rest-api/dto"
-	alertActions "github.com/DmitryLogunov/trading-platform-backend/internal/core/database/mongodb/enums/alert-actions"
+	actionsEnum "github.com/DmitryLogunov/trading-platform-backend/internal/core/database/mongodb/enums/actions"
 	mongodbModels "github.com/DmitryLogunov/trading-platform-backend/internal/core/database/mongodb/models"
 	"github.com/DmitryLogunov/trading-platform-backend/internal/core/helpers"
 	"net/http"
@@ -32,7 +32,7 @@ func (c *Controllers) AddAlert(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	action, err := alertActions.Parse(alertData.Action)
+	action, err := actionsEnum.Parse(alertData.Action)
 	if err != nil {
 		http.Error(w, "Wrong alert action format", http.StatusBadRequest)
 		return
@@ -52,7 +52,7 @@ func (c *Controllers) AddAlert(w http.ResponseWriter, r *http.Request) {
 		CreatedAt: *createdAt,
 	}
 
-	alert.Save(r.Context(), c.MongoDB, alert)
+	alert.Insert(r.Context(), c.MongoDB, alert)
 
 	fmt.Printf("New alert saved: {title: %s, ticker: %s, action: %d, price: %0.6f, createdAt: %s}\n", alert.Title, alert.Ticker, alert.Action, alert.Price, alert.CreatedAt)
 

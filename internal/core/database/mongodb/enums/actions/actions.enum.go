@@ -1,4 +1,4 @@
-package alertActions
+package actions
 
 import (
 	"errors"

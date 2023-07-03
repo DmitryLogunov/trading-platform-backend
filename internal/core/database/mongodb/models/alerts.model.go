@@ -38,8 +38,8 @@ func (a *Alert) getCollection(db *mongo.Database) *mongo.Collection {
 	return db.Collection(collectionName)
 }
 
-// Save : saves alert in db
-func (a *Alert) Save(ctx context.Context, db *mongo.Database, input *Alert) (*Alert, error) {
+// Insert : saves alert in db
+func (a *Alert) Insert(ctx context.Context, db *mongo.Database, input *Alert) (*Alert, error) {
 	alert := Alert{
 		Title:     input.Title,
 		Ticker:    input.Ticker,

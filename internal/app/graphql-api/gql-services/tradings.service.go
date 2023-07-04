@@ -68,8 +68,8 @@ func (ts *TradingService) UpdateTrading(ctx context.Context, mongoDB *mongo.Data
 	}
 
 	var closedAt *time.Time
+	unixStartDatetime := time.Unix(0, 0).UTC()
 	if input.ClosedAt != nil && *input.ClosedAt == "null" {
-		unixStartDatetime := time.Unix(0, 0).UTC()
 		closedAt = &unixStartDatetime
 	} else if input.ClosedAt != nil {
 		closedAt, err = helpers.DatetimeParse(*input.ClosedAt)
@@ -77,8 +77,10 @@ func (ts *TradingService) UpdateTrading(ctx context.Context, mongoDB *mongo.Data
 			fmt.Println(err)
 			return nil, err
 		}
-	} else {
+	} else if gqlTradingFromDB.ClosedAt != nil {
 		closedAt = gqlTradingFromDB.ClosedAt
+	} else {
+		closedAt = &unixStartDatetime
 	}
 
 	tradingsModelItem := mongodbModels.Trading{

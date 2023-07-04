@@ -132,13 +132,12 @@ func (t *Trading) UpdateTrading(ctx context.Context, db *mongo.Database, id stri
 			{"closed_at", input.ClosedAt},
 		}}}
 
-	resMainRequest, err := t.getCollection(db).UpdateOne(ctx, bson.D{{"_id", parsedId}}, updateTradingBsonData)
+	_, err = t.getCollection(db).UpdateOne(ctx, bson.D{{"_id", parsedId}}, updateTradingBsonData)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
 	}
 
-	resClosedRefreshModifiedCount := int64(0)
 	if input.ClosedAt == time.Unix(0, 0).UTC() {
 		updateTradingBsonData := bson.D{{
 			"$unset",
@@ -146,17 +145,11 @@ func (t *Trading) UpdateTrading(ctx context.Context, db *mongo.Database, id stri
 				{"closed_at", ""},
 			}}}
 
-		resClosedRefreshRequest, err := t.getCollection(db).UpdateOne(ctx, bson.D{{"_id", parsedId}}, updateTradingBsonData)
+		_, err = t.getCollection(db).UpdateOne(ctx, bson.D{{"_id", parsedId}}, updateTradingBsonData)
 		if err != nil {
 			fmt.Println(err)
 			return nil, err
 		}
-
-		resClosedRefreshModifiedCount = resClosedRefreshRequest.ModifiedCount
-	}
-
-	if resMainRequest.ModifiedCount+resClosedRefreshModifiedCount < 1 {
-		return nil, fmt.Errorf("updating failed")
 	}
 
 	return t.GetTradingByID(ctx, db, id)

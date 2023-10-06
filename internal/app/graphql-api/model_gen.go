@@ -56,7 +56,7 @@ type JobData struct {
 
 type JobParamInput struct {
 	Key   string `json:"key"`
-	Value int    `json:"value"`
+	Value string `json:"value"`
 }
 
 type JobParamObject struct {
@@ -97,6 +97,12 @@ type Position struct {
 	RoiInBaseCurrency *float64   `json:"roiInBaseCurrency,omitempty"`
 	CreatedAt         time.Time  `json:"createdAt"`
 	ClosedAt          *time.Time `json:"closedAt,omitempty"`
+}
+
+type Price struct {
+	Ticker   string    `json:"ticker"`
+	Price    float64   `json:"price"`
+	Datetime time.Time `json:"datetime"`
 }
 
 type Trading struct {

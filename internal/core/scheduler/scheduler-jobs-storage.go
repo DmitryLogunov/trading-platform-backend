@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	jobStatuses "github.com/DmitryLogunov/trading-platform-backend/internal/core/scheduler/enums/jobs-statuses"
+	"github.com/DmitryLogunov/trading-platform-backend/internal/core/scheduler/handlers"
 	"github.com/go-co-op/gocron"
 	"github.com/google/uuid"
 	"log"
@@ -11,7 +12,8 @@ import (
 )
 
 type JobsStorage struct {
-	data map[string]*Job
+	data     map[string]*Job
+	handlers *handlers.Storage
 }
 
 // CronPeriod : repeat cron interval in unit (seconds, minutes, hours)
@@ -24,8 +26,8 @@ type Job struct {
 	Tag             string `bson:"tag,omitempty"`
 	HandlerTag      string `bson:"handlerTag"`
 	handler         func(interface{}) bool
-	Params          interface{}       `bson:"handlerTag"`
-	scheduler       *gocron.Scheduler `bson:"omitempty"`
+	Params          []handlers.HandlerParam `bson:"handlerTag"`
+	scheduler       *gocron.Scheduler       `bson:"omitempty"`
 	CronPeriod      CronPeriod
 	CreatedAt       time.Time `bson:"createdAt"`
 	UpdatedAt       time.Time `bson:"updatedAt,omitempty"`
@@ -34,10 +36,22 @@ type Job struct {
 }
 
 func (ts *JobsStorage) Init() {
+	ts.handlers = &handlers.Storage{}
+	ts.handlers.Init()
 	ts.data = make(map[string]*Job)
 }
 
-func (ts *JobsStorage) AddJob(handlerTag string, handler func(interface{}) bool, params interface{}, cronPeriod CronPeriod) string {
+func (ts *JobsStorage) AddJob(handlerTag string, handler func(interface{}) bool, params []handlers.HandlerParam, cronPeriod CronPeriod) string {
+	if handler == nil {
+		handlerFromStorage := ts.handlers.GetHandler(handlerTag)
+		if handlerFromStorage == nil {
+			fmt.Printf("error: unknow handler tag")
+			return ""
+		}
+
+		handler = handlerFromStorage(params)
+	}
+
 	tag := uuid.New().String()
 
 	ts.data[tag] = &Job{

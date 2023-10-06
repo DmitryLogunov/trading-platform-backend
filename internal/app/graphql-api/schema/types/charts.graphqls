@@ -1,0 +1,5 @@
+type Price {
+  ticker:    String!
+  price:     Float!
+  datetime:  Time!
+}

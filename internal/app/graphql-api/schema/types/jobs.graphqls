@@ -1,6 +1,6 @@
 input JobParamInput {
   key: String!
-  value: Int!
+  value: String!
 }
 
 input CronPeriodInput {

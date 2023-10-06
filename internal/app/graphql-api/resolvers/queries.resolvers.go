@@ -6,6 +6,7 @@ package resolvers
 
 import (
 	"context"
+	"fmt"
 
 	graphqlApi "github.com/DmitryLogunov/trading-platform-backend/internal/app/graphql-api"
 )
@@ -23,6 +24,11 @@ func (r *queryResolver) GetTradingByID(ctx context.Context, id string) (*graphql
 // GetJobs is the resolver for the getJobs field.
 func (r *queryResolver) GetJobs(ctx context.Context) ([]*graphqlApi.Job, error) {
 	return r.GqlServices.JobsService.GetAllJobs(r.Scheduler)
+}
+
+// GetPricesChart is the resolver for the getPricesChart field.
+func (r *queryResolver) GetPricesChart(ctx context.Context, ticker string) ([]*graphqlApi.Price, error) {
+	panic(fmt.Errorf("not implemented: GetPricesChart - getPricesChart"))
 }
 
 // GetAlerts is the resolver for the getAlerts field.

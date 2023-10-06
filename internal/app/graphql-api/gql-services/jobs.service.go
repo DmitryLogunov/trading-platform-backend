@@ -3,22 +3,16 @@ package gqlServices
 import (
 	"encoding/json"
 	"fmt"
-	"log"
-
 	graphqlApi "github.com/DmitryLogunov/trading-platform-backend/internal/app/graphql-api"
 	"github.com/DmitryLogunov/trading-platform-backend/internal/core/scheduler"
 	cronPeriodUnits "github.com/DmitryLogunov/trading-platform-backend/internal/core/scheduler/enums/cron-period-units"
 	jobStatuses "github.com/DmitryLogunov/trading-platform-backend/internal/core/scheduler/enums/jobs-statuses"
+	"github.com/DmitryLogunov/trading-platform-backend/internal/core/scheduler/handlers"
 )
 
 type JobsService struct{}
 
 func (js *JobsService) StartJob(s *scheduler.JobsManager, input graphqlApi.JobData) (string, error) {
-	handler := func(interface{}) bool {
-		log.Printf("Job processing: %s", input.HandlerTag)
-		return true
-	}
-
 	var cronPeriodUnit uint
 	if input.CronPeriod.Unit == "seconds" {
 		cronPeriodUnit = cronPeriodUnits.Seconds
@@ -32,10 +26,16 @@ func (js *JobsService) StartJob(s *scheduler.JobsManager, input graphqlApi.JobDa
 		cronPeriodUnit = cronPeriodUnits.Hours
 	}
 
+	var handlerParams []handlers.HandlerParam
+	for _, p := range input.Params {
+		handlerParams = append(handlerParams, handlers.HandlerParam{
+			Key:   p.Key,
+			Value: p.Value,
+		})
+	}
 	return s.AddJob(
 		input.HandlerTag,
-		handler,
-		input.Params,
+		handlerParams,
 		scheduler.CronPeriod{Unit: cronPeriodUnit, Interval: input.CronPeriod.Interval},
 	), nil
 }

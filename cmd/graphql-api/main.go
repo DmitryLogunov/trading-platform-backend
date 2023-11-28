@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/joho/godotenv"
+	"github.com/rs/cors"
 	"log"
 	"net/http"
 	"os"
@@ -13,9 +14,9 @@ import (
 	gqlServices "github.com/DmitryLogunov/trading-platform-backend/internal/app/graphql-api/gql-services"
 	"github.com/DmitryLogunov/trading-platform-backend/internal/app/graphql-api/resolvers"
 	"github.com/DmitryLogunov/trading-platform-backend/internal/core/database/mongodb"
+	binanceAPIClient "github.com/DmitryLogunov/trading-platform-backend/internal/core/providers/binance-api-client"
 	"github.com/DmitryLogunov/trading-platform-backend/internal/core/scheduler"
 	"github.com/go-chi/chi"
-	"github.com/rs/cors"
 )
 
 const defaultPort = "3000"
@@ -44,8 +45,8 @@ func main() {
 
 	router := chi.NewRouter()
 
-	// Add CORS middleware around every request
-	// See https://github.com/rs/cors for full option listing
+	//Add CORS middleware around every request
+	//See https://github.com/rs/cors for full option listing
 	router.Use(cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://localhost:8080"},
 		AllowCredentials: true,
@@ -53,9 +54,10 @@ func main() {
 	}).Handler)
 
 	var srv = handler.NewDefaultServer(graphqlApi.NewExecutableSchema(graphqlApi.Config{Resolvers: &resolvers.Resolver{
-		MongoDB:     mongoDB,
-		Scheduler:   &scheduler,
-		GqlServices: &graphQLServices,
+		MongoDB:          mongoDB,
+		Scheduler:        &scheduler,
+		GqlServices:      &graphQLServices,
+		BinanceAPIClient: &binanceAPIClient.BinanceAPIClient{},
 	}}))
 
 	router.Handle("/playground", playground.Handler("GraphQL playground", "/playground"))

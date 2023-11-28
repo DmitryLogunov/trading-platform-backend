@@ -5,6 +5,7 @@ type Query {
   getJobs: [Job!]!
 
   getPricesChart(ticker: String!): [Price!]!
+  getCandlestickChart(ticker: String!): [Candlestick!]!
 
   getAlerts(filters: AlertsFiltersInput): [Alert!]!
 

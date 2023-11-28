@@ -31,6 +31,11 @@ func (r *queryResolver) GetPricesChart(ctx context.Context, ticker string) ([]*g
 	panic(fmt.Errorf("not implemented: GetPricesChart - getPricesChart"))
 }
 
+// GetCandlestickChart is the resolver for the getCandlestickChart field.
+func (r *queryResolver) GetCandlestickChart(ctx context.Context, ticker string) ([]*graphqlApi.Candlestick, error) {
+	return r.GqlServices.ChartsService.GetCandlesticksCharts(ctx, r.BinanceAPIClient, ticker)
+}
+
 // GetAlerts is the resolver for the getAlerts field.
 func (r *queryResolver) GetAlerts(ctx context.Context, filters *graphqlApi.AlertsFiltersInput) ([]*graphqlApi.Alert, error) {
 	return r.GqlServices.AlertsService.GetAlerts(ctx, r.MongoDB, filters)

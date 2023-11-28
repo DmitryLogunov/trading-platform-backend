@@ -5,7 +5,6 @@ import (
 	"fmt"
 	marketTypes "github.com/DmitryLogunov/trading-platform-backend/internal/core/providers/binance-api-client/enums/market-types"
 	"net/http"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -56,20 +55,8 @@ func (bc *BinanceAPIClient) GetPrices(marketType uint, tickers []string) *Ticker
 		return nil
 	}
 
-	for _, tickerPrice := range tickersPricesList {
-		last4chars := tickerPrice.Symbol[len(tickerPrice.Symbol)-4:]
-		if last4chars != "USDT" {
-			continue
-		}
-
-		price, err := strconv.ParseFloat(tickerPrice.Price, 32)
-		if err != nil {
-			fmt.Printf("error: %s, could not parse price: %s\n", err, tickerPrice.Price)
-			return nil
-		}
-
-		fmt.Printf("symbol: %s, price: %f\n", tickerPrice.Symbol, float32(price))
+	return &TickersPricesList{
+		Datetime: time.Now(),
+		Data:     &tickersPricesList,
 	}
-
-	return nil
 }

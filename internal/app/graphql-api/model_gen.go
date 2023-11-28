@@ -23,6 +23,15 @@ type AlertsFiltersInput struct {
 	CreatedAtTo   *string `json:"createdAtTo,omitempty"`
 }
 
+type Candlestick struct {
+	Datetime time.Time `json:"datetime"`
+	Data     []float64 `json:"data"`
+}
+
+type CandlesticksChartFiltersInput struct {
+	Ticker string `json:"ticker"`
+}
+
 type ClosePositionInput struct {
 	ID       string  `json:"id"`
 	Price    float64 `json:"price"`

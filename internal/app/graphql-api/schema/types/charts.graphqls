@@ -3,3 +3,12 @@ type Price {
   price:     Float!
   datetime:  Time!
 }
+
+type Candlestick {
+  datetime: Time!
+  data: [Float!]!
+}
+
+input CandlesticksChartFiltersInput {
+  ticker: String!
+}

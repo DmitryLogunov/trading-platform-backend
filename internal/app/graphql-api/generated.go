@@ -54,6 +54,11 @@ type ComplexityRoot struct {
 		Title     func(childComplexity int) int
 	}
 
+	Candlestick struct {
+		Data     func(childComplexity int) int
+		Datetime func(childComplexity int) int
+	}
+
 	CronPeriodObject struct {
 		Interval func(childComplexity int) int
 		Unit     func(childComplexity int) int
@@ -112,13 +117,14 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		GetAlerts       func(childComplexity int, filters *AlertsFiltersInput) int
-		GetJobs         func(childComplexity int) int
-		GetPositionByID func(childComplexity int, id string) int
-		GetPositions    func(childComplexity int, tradingID string) int
-		GetPricesChart  func(childComplexity int, ticker string) int
-		GetTradingByID  func(childComplexity int, id string) int
-		GetTradings     func(childComplexity int) int
+		GetAlerts           func(childComplexity int, filters *AlertsFiltersInput) int
+		GetCandlestickChart func(childComplexity int, ticker string) int
+		GetJobs             func(childComplexity int) int
+		GetPositionByID     func(childComplexity int, id string) int
+		GetPositions        func(childComplexity int, tradingID string) int
+		GetPricesChart      func(childComplexity int, ticker string) int
+		GetTradingByID      func(childComplexity int, id string) int
+		GetTradings         func(childComplexity int) int
 	}
 
 	Trading struct {
@@ -152,6 +158,7 @@ type QueryResolver interface {
 	GetTradingByID(ctx context.Context, id string) (*Trading, error)
 	GetJobs(ctx context.Context) ([]*Job, error)
 	GetPricesChart(ctx context.Context, ticker string) ([]*Price, error)
+	GetCandlestickChart(ctx context.Context, ticker string) ([]*Candlestick, error)
 	GetAlerts(ctx context.Context, filters *AlertsFiltersInput) ([]*Alert, error)
 	GetPositionByID(ctx context.Context, id string) (*Position, error)
 	GetPositions(ctx context.Context, tradingID string) ([]*Position, error)
@@ -213,6 +220,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Alert.Title(childComplexity), true
+
+	case "Candlestick.data":
+		if e.complexity.Candlestick.Data == nil {
+			break
+		}
+
+		return e.complexity.Candlestick.Data(childComplexity), true
+
+	case "Candlestick.datetime":
+		if e.complexity.Candlestick.Datetime == nil {
+			break
+		}
+
+		return e.complexity.Candlestick.Datetime(childComplexity), true
 
 	case "CronPeriodObject.interval":
 		if e.complexity.CronPeriodObject.Interval == nil {
@@ -523,6 +544,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetAlerts(childComplexity, args["filters"].(*AlertsFiltersInput)), true
 
+	case "Query.getCandlestickChart":
+		if e.complexity.Query.GetCandlestickChart == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getCandlestickChart_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetCandlestickChart(childComplexity, args["ticker"].(string)), true
+
 	case "Query.getJobs":
 		if e.complexity.Query.GetJobs == nil {
 			break
@@ -671,6 +704,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	ec := executionContext{rc, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
 		ec.unmarshalInputAlertsFiltersInput,
+		ec.unmarshalInputCandlesticksChartFiltersInput,
 		ec.unmarshalInputClosePositionInput,
 		ec.unmarshalInputCronPeriodInput,
 		ec.unmarshalInputJobData,
@@ -963,6 +997,21 @@ func (ec *executionContext) field_Query_getAlerts_args(ctx context.Context, rawA
 		}
 	}
 	args["filters"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_getCandlestickChart_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["ticker"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ticker"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["ticker"] = arg0
 	return args, nil
 }
 
@@ -1323,6 +1372,94 @@ func (ec *executionContext) fieldContext_Alert_createdAt(ctx context.Context, fi
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Candlestick_datetime(ctx context.Context, field graphql.CollectedField, obj *Candlestick) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Candlestick_datetime(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Datetime, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Candlestick_datetime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Candlestick",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Candlestick_data(ctx context.Context, field graphql.CollectedField, obj *Candlestick) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Candlestick_data(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Data, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]float64)
+	fc.Result = res
+	return ec.marshalNFloat2ᚕfloat64ᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Candlestick_data(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Candlestick",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
 		},
 	}
 	return fc, nil
@@ -3388,6 +3525,67 @@ func (ec *executionContext) fieldContext_Query_getPricesChart(ctx context.Contex
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_getPricesChart_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_getCandlestickChart(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getCandlestickChart(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetCandlestickChart(rctx, fc.Args["ticker"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*Candlestick)
+	fc.Result = res
+	return ec.marshalNCandlestick2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚑbackendᚋinternalᚋappᚋgraphqlᚑapiᚐCandlestickᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_getCandlestickChart(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "datetime":
+				return ec.fieldContext_Candlestick_datetime(ctx, field)
+			case "data":
+				return ec.fieldContext_Candlestick_data(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Candlestick", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_getCandlestickChart_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -6049,6 +6247,35 @@ func (ec *executionContext) unmarshalInputAlertsFiltersInput(ctx context.Context
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputCandlesticksChartFiltersInput(ctx context.Context, obj interface{}) (CandlesticksChartFiltersInput, error) {
+	var it CandlesticksChartFiltersInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"ticker"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "ticker":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ticker"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Ticker = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputClosePositionInput(ctx context.Context, obj interface{}) (ClosePositionInput, error) {
 	var it ClosePositionInput
 	asMap := map[string]interface{}{}
@@ -6469,6 +6696,50 @@ func (ec *executionContext) _Alert(ctx context.Context, sel ast.SelectionSet, ob
 			}
 		case "createdAt":
 			out.Values[i] = ec._Alert_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var candlestickImplementors = []string{"Candlestick"}
+
+func (ec *executionContext) _Candlestick(ctx context.Context, sel ast.SelectionSet, obj *Candlestick) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, candlestickImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Candlestick")
+		case "datetime":
+			out.Values[i] = ec._Candlestick_datetime(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "data":
+			out.Values[i] = ec._Candlestick_data(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -7025,6 +7296,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_getPricesChart(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "getCandlestickChart":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getCandlestickChart(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -7603,6 +7896,60 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
+func (ec *executionContext) marshalNCandlestick2ᚕᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚑbackendᚋinternalᚋappᚋgraphqlᚑapiᚐCandlestickᚄ(ctx context.Context, sel ast.SelectionSet, v []*Candlestick) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNCandlestick2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚑbackendᚋinternalᚋappᚋgraphqlᚑapiᚐCandlestick(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNCandlestick2ᚖgithubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚑbackendᚋinternalᚋappᚋgraphqlᚑapiᚐCandlestick(ctx context.Context, sel ast.SelectionSet, v *Candlestick) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Candlestick(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalNClosePositionInput2githubᚗcomᚋDmitryLogunovᚋtradingᚑplatformᚑbackendᚋinternalᚋappᚋgraphqlᚑapiᚐClosePositionInput(ctx context.Context, v interface{}) (ClosePositionInput, error) {
 	res, err := ec.unmarshalInputClosePositionInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -7626,6 +7973,38 @@ func (ec *executionContext) marshalNFloat2float64(ctx context.Context, sel ast.S
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNFloat2ᚕfloat64ᚄ(ctx context.Context, v interface{}) ([]float64, error) {
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]float64, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNFloat2float64(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalNFloat2ᚕfloat64ᚄ(ctx context.Context, sel ast.SelectionSet, v []float64) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalNFloat2float64(ctx, sel, v[i])
+	}
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
 }
 
 func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {

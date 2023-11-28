@@ -5,6 +5,7 @@ type GqlServices struct {
 	JobsService      *JobsService
 	TradingService   *TradingService
 	PositionsService *PositionsService
+	ChartsService    *ChartsService
 }
 
 func (gs *GqlServices) Init() {
@@ -12,4 +13,5 @@ func (gs *GqlServices) Init() {
 	gs.JobsService = &JobsService{}
 	gs.TradingService = &TradingService{}
 	gs.PositionsService = &PositionsService{}
+	gs.ChartsService = &ChartsService{}
 }

@@ -3,36 +3,16 @@ package binance_api_client
 import (
 	"encoding/json"
 	"fmt"
-	marketTypes "github.com/DmitryLogunov/trading-platform-backend/internal/core/providers/binance-api-client/enums/market-types"
 	"net/http"
 	"strings"
 	"time"
 )
 
-type Price struct {
-	Symbol string
-	Price  string
-}
-
-type TickersPricesList struct {
-	Datetime time.Time
-	Data     *[]Price
-}
-
-const BinanceSpotApiUrl = "https://api.binance.com"
-const BinanceFuturesApiUrl = "https://fapi.binance.com"
-
-type BinanceAPIClient struct {
-}
-
+// GetPrices returns prices list as a response of Binance API request /api/v3/ticker/price
 func (bc *BinanceAPIClient) GetPrices(marketType uint, tickers []string) *TickersPricesList {
-	var baseAPIUrl string
-	if marketType == marketTypes.Spot {
-		baseAPIUrl = BinanceSpotApiUrl
-	} else if marketType == marketTypes.Futures {
-		baseAPIUrl = BinanceFuturesApiUrl
-	} else {
-		fmt.Println("Error: unknown market type. API url is undefined")
+	baseAPIUrl, err := bc.getBinanceApiBaseUrl(marketType)
+	if err != nil {
+		fmt.Printf("client: could get Binance base API Url: %s\n", err)
 		return nil
 	}
 

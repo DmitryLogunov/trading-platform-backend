@@ -33,7 +33,7 @@ func (r *queryResolver) GetPricesChart(ctx context.Context, ticker string) ([]*g
 
 // GetCandlestickChart is the resolver for the getCandlestickChart field.
 func (r *queryResolver) GetCandlestickChart(ctx context.Context, ticker string) ([]*graphqlApi.Candlestick, error) {
-	return r.GqlServices.ChartsService.GetCandlesticksCharts(ctx, r.BinanceAPIClient, ticker)
+	return r.GqlServices.ChartsService.GetCandlesticksChart(ctx, r.BinanceAPIClient, ticker)
 }
 
 // GetAlerts is the resolver for the getAlerts field.

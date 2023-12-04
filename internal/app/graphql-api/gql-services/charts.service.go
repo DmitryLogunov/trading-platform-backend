@@ -9,8 +9,8 @@ import (
 
 type ChartsService struct{}
 
-// GetCandlesticksCharts returns candlestick chart data via request to Binance API /api/v3/klines
-func (cs *ChartsService) GetCandlesticksCharts(
+// GetCandlesticksChart returns candlestick chart data via request to Binance API /api/v3/klines
+func (cs *ChartsService) GetCandlesticksChart(
 	ctx context.Context,
 	binanceApiClient *binance_api_client.BinanceAPIClient,
 	ticker string) ([]*graphqlApi.Candlestick, error) {

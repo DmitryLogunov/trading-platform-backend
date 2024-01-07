@@ -28,7 +28,7 @@ services:
       MONGODB_PORT: ${MONGODB_PORT}
       HTTP_GRAPHQL_PORT: ${HTTP_GRAPHQL_PORT}
     volumes:
-      - ../.env.local:/usr/src/app/.env:ro
+      - ../.env:/usr/src/app/.env:ro
     container_name: trading-platform-graphql-api
     command: ["/bin/sh", "-ce", "sleep 2 && ./trading-platform-graphql-api"]
 
@@ -46,7 +46,7 @@ services:
       MONGODB_PORT: ${MONGODB_PORT}
       HTTP_GRAPHQL_PORT: ${HTTP_REST_PORT}
     volumes:
-      - ../.env.local:/usr/src/app/.env:ro
+      - ../.env:/usr/src/app/.env:ro
     container_name: trading-platform-rest-api
     command: ["/bin/sh", "-ce", "sleep 2 && ./trading-platform-rest-api"]
 

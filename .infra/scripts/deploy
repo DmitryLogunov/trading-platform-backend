@@ -8,7 +8,7 @@ docker stop ${exited_containers_ids} && docker rm ${exited_containers_ids}
 ROOT_DIR=$(pwd)
 export $(cat ${ROOT_DIR}/.env)
 
-docker build -f .infra/Dockerfile.graphql-api -t trading-platform-graphql-api .
-docker build -f .infra/Dockerfile.rest-api -t trading-platform-rest-api .
+#docker build -f .infra/Dockerfile.graphql-api -t trading-platform-graphql-api .
+#docker build -f .infra/Dockerfile.rest-api -t trading-platform-rest-api .
 
 docker-compose -f .infra/docker-compose.yml up -d

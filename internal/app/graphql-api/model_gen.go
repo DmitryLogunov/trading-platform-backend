@@ -24,8 +24,8 @@ type AlertsFiltersInput struct {
 }
 
 type Candlestick struct {
-	Datetime time.Time `json:"datetime"`
-	Data     []float64 `json:"data"`
+	X int       `json:"x"`
+	Y []float64 `json:"y"`
 }
 
 type CandlesticksChartFiltersInput struct {

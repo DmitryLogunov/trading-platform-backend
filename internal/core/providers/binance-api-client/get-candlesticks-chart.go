@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	graphqlApi "github.com/DmitryLogunov/trading-platform-backend/internal/app/graphql-api"
 	marketTypes "github.com/DmitryLogunov/trading-platform-backend/internal/core/providers/binance-api-client/enums/market-types"
 	"github.com/DmitryLogunov/trading-platform-backend/internal/core/providers/binance-api-client/enums/timeframes"
 	"github.com/adshao/go-binance/v2"
@@ -17,7 +18,7 @@ var (
 
 // GetCandlesticksChart returns candlesticks list as a response of Binance API request /api/v3/klines in chart required format
 // see: https://apexcharts.com/docs/chart-types/candlestick/
-func (bc *BinanceAPIClient) GetCandlesticksChart(marketType uint, ticker string, timeframeTag uint) (*[]Candlestick, error) {
+func (bc *BinanceAPIClient) GetCandlesticksChart(marketType uint, ticker string, timeframeTag uint) ([]*graphqlApi.Candlestick, error) {
 	timeframe, err := timeframes.GetTimeframe(timeframeTag)
 	if err != nil {
 		fmt.Println(err)
@@ -41,20 +42,20 @@ func (bc *BinanceAPIClient) GetCandlesticksChart(marketType uint, ticker string,
 		return nil, errors.New("unknown market type")
 	}
 
-	var candlesticks []Candlestick
+	var candlesticks []*graphqlApi.Candlestick
 	for _, k := range klines {
 		prices, err := bc.parseKlinePrices(&k)
 		if err != nil {
 			continue
 		}
 
-		candlesticks = append(candlesticks, Candlestick{
-			Datetime: k.OpenTime,
-			Data:     prices,
+		candlesticks = append(candlesticks, &graphqlApi.Candlestick{
+			X: int(k.OpenTime),
+			Y: prices,
 		})
 	}
 
-	return &candlesticks, nil
+	return candlesticks, nil
 }
 
 // parseKlinePrices: parses Kline prices to []float64 array data

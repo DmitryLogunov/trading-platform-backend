@@ -23,7 +23,7 @@ jobs:
             docker build -f .infra/Dockerfile.graphql-api -t trading-platform-graphql-api .
             docker build -f .infra/Dockerfile.rest-api -t trading-platform-rest-api .
             cd /home/projects/infra
-            ids=${docker ps --all | grep api | awk '{ print $1 }'}
+            ids=$(docker ps --all | grep api | awk '{ print $1 }')
             docker stop $ids && docker rm $ids
             export $(cat /home/projects/infra/env-files/trading-platform-backend/master/.env) && docker-compose up -d
 

@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master'
     steps:
-    - name: pull, build & restart
+    - name: pull & build
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
@@ -20,4 +20,6 @@ jobs:
             cd ${{ secrets.PROJECTPATH }}
             git checkout master 
             git pull
+            docker build -f .infra/Dockerfile.graphql-api -t trading-platform-graphql-api .
+            docker build -f .infra/Dockerfile.rest-api -t trading-platform-rest-api .
 

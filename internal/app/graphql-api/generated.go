@@ -55,8 +55,8 @@ type ComplexityRoot struct {
 	}
 
 	Candlestick struct {
-		Data     func(childComplexity int) int
-		Datetime func(childComplexity int) int
+		X func(childComplexity int) int
+		Y func(childComplexity int) int
 	}
 
 	CronPeriodObject struct {
@@ -221,19 +221,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Alert.Title(childComplexity), true
 
-	case "Candlestick.data":
-		if e.complexity.Candlestick.Data == nil {
+	case "Candlestick.x":
+		if e.complexity.Candlestick.X == nil {
 			break
 		}
 
-		return e.complexity.Candlestick.Data(childComplexity), true
+		return e.complexity.Candlestick.X(childComplexity), true
 
-	case "Candlestick.datetime":
-		if e.complexity.Candlestick.Datetime == nil {
+	case "Candlestick.y":
+		if e.complexity.Candlestick.Y == nil {
 			break
 		}
 
-		return e.complexity.Candlestick.Datetime(childComplexity), true
+		return e.complexity.Candlestick.Y(childComplexity), true
 
 	case "CronPeriodObject.interval":
 		if e.complexity.CronPeriodObject.Interval == nil {
@@ -1377,8 +1377,8 @@ func (ec *executionContext) fieldContext_Alert_createdAt(ctx context.Context, fi
 	return fc, nil
 }
 
-func (ec *executionContext) _Candlestick_datetime(ctx context.Context, field graphql.CollectedField, obj *Candlestick) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Candlestick_datetime(ctx, field)
+func (ec *executionContext) _Candlestick_x(ctx context.Context, field graphql.CollectedField, obj *Candlestick) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Candlestick_x(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -1391,7 +1391,7 @@ func (ec *executionContext) _Candlestick_datetime(ctx context.Context, field gra
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Datetime, nil
+		return obj.X, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1403,26 +1403,26 @@ func (ec *executionContext) _Candlestick_datetime(ctx context.Context, field gra
 		}
 		return graphql.Null
 	}
-	res := resTmp.(time.Time)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Candlestick_datetime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Candlestick_x(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Candlestick",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Time does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Candlestick_data(ctx context.Context, field graphql.CollectedField, obj *Candlestick) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Candlestick_data(ctx, field)
+func (ec *executionContext) _Candlestick_y(ctx context.Context, field graphql.CollectedField, obj *Candlestick) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Candlestick_y(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -1435,7 +1435,7 @@ func (ec *executionContext) _Candlestick_data(ctx context.Context, field graphql
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Data, nil
+		return obj.Y, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1452,7 +1452,7 @@ func (ec *executionContext) _Candlestick_data(ctx context.Context, field graphql
 	return ec.marshalNFloat2ᚕfloat64ᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Candlestick_data(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Candlestick_y(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Candlestick",
 		Field:      field,
@@ -3570,10 +3570,10 @@ func (ec *executionContext) fieldContext_Query_getCandlestickChart(ctx context.C
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "datetime":
-				return ec.fieldContext_Candlestick_datetime(ctx, field)
-			case "data":
-				return ec.fieldContext_Candlestick_data(ctx, field)
+			case "x":
+				return ec.fieldContext_Candlestick_x(ctx, field)
+			case "y":
+				return ec.fieldContext_Candlestick_y(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Candlestick", field.Name)
 		},
@@ -6733,13 +6733,13 @@ func (ec *executionContext) _Candlestick(ctx context.Context, sel ast.SelectionS
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Candlestick")
-		case "datetime":
-			out.Values[i] = ec._Candlestick_datetime(ctx, field, obj)
+		case "x":
+			out.Values[i] = ec._Candlestick_x(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "data":
-			out.Values[i] = ec._Candlestick_data(ctx, field, obj)
+		case "y":
+			out.Values[i] = ec._Candlestick_y(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}

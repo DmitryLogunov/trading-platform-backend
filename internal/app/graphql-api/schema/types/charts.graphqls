@@ -5,8 +5,8 @@ type Price {
 }
 
 type Candlestick {
-  datetime: Time!
-  data: [Float!]!
+  x: Int!
+  y: [Float!]!
 }
 
 input CandlesticksChartFiltersInput {

@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   mongodb:
-    image: mongo:4.4.22
+    image: mongo:latest
     container_name: mongodb
     ports:
       - 27017:27017
@@ -50,6 +50,16 @@ services:
     container_name: trading-platform-rest-api
     command: ["/bin/sh", "-ce", "sleep 2 && ./trading-platform-rest-api"]
 
+  trading-platform-frontend:
+    image: trading-platform-frontend.v0
+    depends_on:
+      - trading-platform-rest-api
+      - trading-platform-graphql-api
+    ports:
+      - 0.0.0.0:8080:8080
+    container_name: trading-platform-frontend
+    command: [ "yarn", "start" ]
+
 volumes:
   mongodb:
   mongodb-config:
@@ -58,4 +68,4 @@ networks:
   trading-platform-backend-net:
     external: false
     driver: bridge
-    name: trading-platform-backend-net
+    name: trading-platform-net

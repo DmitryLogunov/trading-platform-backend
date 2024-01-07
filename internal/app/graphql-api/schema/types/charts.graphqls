@@ -1,0 +1,14 @@
+type Price {
+  ticker:    String!
+  price:     Float!
+  datetime:  Time!
+}
+
+type Candlestick {
+  x: Int!
+  y: [Float!]!
+}
+
+input CandlesticksChartFiltersInput {
+  ticker: String!
+}

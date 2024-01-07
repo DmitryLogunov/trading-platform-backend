@@ -2,13 +2,14 @@ name: deployment
 
 on:
   push:
-    branches: []
+    branches: [master]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
     steps:
-    - name: pull, build & run
+    - name: pull, build & restart
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
@@ -18,5 +19,5 @@ jobs:
         script: |
             cd ${{ secrets.PROJECTPATH }}
             git checkout master 
-            git pull https://${{ secrets.GITHUBPAT }}@github.com/DmitryLogunov/trading-platform-backend.git        
-            .infra/scripts/deploy
+            git pull
+

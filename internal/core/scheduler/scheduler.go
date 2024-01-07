@@ -5,6 +5,7 @@ import (
 	"fmt"
 	cronPeriodUnits "github.com/DmitryLogunov/trading-platform-backend/internal/core/scheduler/enums/cron-period-units"
 	jobsStatuses "github.com/DmitryLogunov/trading-platform-backend/internal/core/scheduler/enums/jobs-statuses"
+	"github.com/DmitryLogunov/trading-platform-backend/internal/core/scheduler/handlers"
 	"log"
 	"time"
 
@@ -25,7 +26,7 @@ func (jm *JobsManager) Init() {
 	jm.refreshJobsTag = jm.jobs.AddJob(
 		"scheduler-manager-refreshing-job",
 		jm.RefreshJobs,
-		"",
+		nil,
 		CronPeriod{Unit: cronPeriodUnits.Seconds, Interval: 5},
 	)
 
@@ -43,11 +44,10 @@ func (jm *JobsManager) Init() {
 
 func (jm *JobsManager) AddJob(
 	handlerTag string,
-	handler func(interface{}) bool,
-	params interface{},
+	params []handlers.HandlerParam,
 	cronPeriod CronPeriod,
 ) string {
-	return jm.jobs.AddJob(handlerTag, handler, params, cronPeriod)
+	return jm.jobs.AddJob(handlerTag, nil, params, cronPeriod)
 }
 
 func (jm *JobsManager) DeleteJob(tag string) (bool, error) {

@@ -10,7 +10,7 @@ import (
 func main() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env.local file")
+		log.Fatal("Error loading .env file")
 	}
 
 	mongoDB, err := mongodb.ConnectDB()

@@ -24,7 +24,7 @@ const defaultPort = "3000"
 func main() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env.local file")
+		log.Fatal("Error loading .env file")
 	}
 
 	port := os.Getenv("HTTP_GRAPHQL_PORT")

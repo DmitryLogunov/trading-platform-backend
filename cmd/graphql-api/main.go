@@ -50,7 +50,7 @@ func main() {
 	router.Use(cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
 		AllowedMethods:   []string{"GET", "POST", "PATCH"},
-		AllowedHeaders:   []string{"Bearer", "Content_Type"},
+		AllowedHeaders:   []string{"Bearer", "Content-Type"},
 		AllowCredentials: true,
 		Debug:            true,
 	}).Handler)

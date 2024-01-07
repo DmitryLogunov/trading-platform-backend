@@ -22,6 +22,10 @@ jobs:
             git pull
             docker build -f .infra/Dockerfile.graphql-api -t trading-platform-graphql-api .
             docker build -f .infra/Dockerfile.rest-api -t trading-platform-rest-api .
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    steps:
     - name: deploy
       uses: appleboy/ssh-action@master
       with:
@@ -31,4 +35,4 @@ jobs:
         port: ${{ secrets.PORT }}
         script: |
             cd /home/projects/infra
-            export $(cat /home/projects/infra/env-files/trading-platform-backend/master/.env) && docker-compose up -d
+            export $(cat /home/projects/infra/env-files/trading-platform-backend/master/.env) && docker-compose restart
